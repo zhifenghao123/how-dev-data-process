@@ -7,6 +7,7 @@ object UserProductAnalysis {
   def main(args: Array[String]): Unit = {
     // 创建SparkSession
     val spark = SparkSession.builder()
+      .master("local")
       .appName("UserProductAnalysis")
       .getOrCreate()
 

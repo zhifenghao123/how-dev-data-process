@@ -30,5 +30,17 @@ object UserProductAnalysis {
       .agg(collect_list(struct("product_type", "product_info_list")).alias("u_product"))
 
     groupedOrdersByUseridDf.show()
+
+    groupedOrdersByUseridDf.createOrReplaceTempView("groupedOrdersByUseridBase")
+
+    println("--------------------")
+
+    val frame = spark.sql(
+      """
+        |select *
+        |from
+        |groupedOrdersByUseridBase
+        |""".stripMargin)
+    frame.show()
   }
 }

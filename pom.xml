@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>how-dev-scala</module>
+        <module>how-dev-spark</module>
     </modules>
 
     <properties>

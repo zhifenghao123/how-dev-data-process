@@ -11,6 +11,7 @@
     <modules>
         <module>how-dev-scala</module>
         <module>how-dev-spark</module>
+        <module>how-dev-data-process-app</module>
     </modules>
 
     <properties>

@@ -16,7 +16,7 @@ object WordCount3 {
 
     println("========FileInput读取切片数据===============")
     // 读取指定文件数据
-    val txtFile: RDD[String] = sc.textFile("test-datasets/word.txt")
+    val txtFile: RDD[String] = sc.textFile("how-dev-spark/test-datasets/word.txt")
     txtFile.foreach(println)
 
     println("======Mapper类处理切片数据,每行调用一次map方法==================")

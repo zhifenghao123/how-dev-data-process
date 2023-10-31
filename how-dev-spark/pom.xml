@@ -11,5 +11,34 @@
 
     <artifactId>how-dev-spark</artifactId>
 
+    <properties>
+
+        <scala.version>2.11</scala.version>
+        <spark.version>2.1.1</spark.version>
+    </properties>
+
+    <dependencies>
+        <!-- 导入spark的依赖 -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <!-- spark sql -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <!--hive依赖-->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+    </dependencies>
 
 </project>

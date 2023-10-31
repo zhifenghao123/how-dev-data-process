@@ -1,7 +1,7 @@
 package com.howdev.spark.userproduct
 
-import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.functions.{collect_list, struct}
+import org.apache.spark.sql.{Row, SparkSession}
 
 case class Product(productType: String, productId: String, productName: String, productPrice: String)
 

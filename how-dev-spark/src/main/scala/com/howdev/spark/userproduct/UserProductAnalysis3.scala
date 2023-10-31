@@ -3,7 +3,7 @@ package com.howdev.spark.userproduct
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{collect_list, struct}
 
-object UserProductAnalysis {
+object UserProductAnalysis3 {
   def main(args: Array[String]): Unit = {
     // 创建SparkSession
     val spark = SparkSession.builder()
@@ -15,7 +15,7 @@ object UserProductAnalysis {
     //val orders = spark.read.csv("test-datasets/user_product.csv")
     val ordersDf = spark.read
       .option("header", "true")
-      .csv("test-datasets/user_product2.csv")
+      .csv("how-dev-spark/test-datasets/user_product2.csv")
 
     ordersDf.show()
 
@@ -30,5 +30,24 @@ object UserProductAnalysis {
       .agg(collect_list(struct("product_type", "product_info_list")).alias("u_product"))
 
     groupedOrdersByUseridDf.show()
+
+    groupedOrdersByUseridDf.createOrReplaceTempView("groupedOrdersByUseridBase")
+
+    println("--------------------")
+
+    val frame = spark.sql(
+      """
+        |select *
+        |from
+        |groupedOrdersByUseridBase
+        |""".stripMargin)
+    frame.show()
+
+    val backTrackCmidSet = frame.select("user_id").collect().toSet
+    val customerIdString = backTrackCmidSet.mkString("(", ", ", ")")
+    println(customerIdString)
+
+
   }
+
 }

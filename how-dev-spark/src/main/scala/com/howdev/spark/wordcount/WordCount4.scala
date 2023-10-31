@@ -14,7 +14,7 @@ object WordCount4 {
     // 创建和Spark框架的链接
     val sc: SparkContext = new SparkContext(sparkconf)
 
-    val result: RDD[(String, Int)] = sc.textFile("test-datasets/word.txt")
+    val result: RDD[(String, Int)] = sc.textFile("how-dev-spark/test-datasets/word.txt")
       .flatMap(_.split(" "))
       .map((_, 1))
       .reduceByKey(_ + _).

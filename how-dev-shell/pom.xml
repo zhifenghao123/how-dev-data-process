@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>how-dev-scala</artifactId>
+    <artifactId>how-dev-shell</artifactId>
 
 
 </project>

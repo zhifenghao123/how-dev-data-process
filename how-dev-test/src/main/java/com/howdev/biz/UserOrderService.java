@@ -14,8 +14,8 @@ import com.howdev.biz.mapper.CategoryMapper;
 import com.howdev.biz.mapper.OrderDetailMapper;
 import com.howdev.biz.mapper.ProductMapper;
 import com.howdev.biz.mapper.UserOrderMapper;
-import com.howdev.biz.model.Category;
-import com.howdev.biz.model.Product;
+import com.howdev.biz.po.Category;
+import com.howdev.biz.po.Product;
 
 /**
  * UserOrderService class
@@ -48,7 +48,7 @@ public class UserOrderService {
         categoryMapper = sqlSession.getMapper(CategoryMapper.class);
     }
     public static void main(String[] args) {
-        //testProduct1();
+        testProduct1();
     }
 
     static void testCategory1() {

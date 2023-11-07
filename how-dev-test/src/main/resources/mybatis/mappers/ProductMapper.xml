@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.howdev.biz.mapper.ProductMapper">
-  <resultMap id="BaseResultMap" type="com.howdev.biz.model.Product">
+  <resultMap id="BaseResultMap" type="com.howdev.biz.po.Product">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -24,7 +24,7 @@
     delete from product
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.Product" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.Product" useGeneratedKeys="true">
     insert into product (product_id, `name`, description, 
       price, category_id, created, 
       updated)
@@ -32,7 +32,7 @@
       #{price,jdbcType=DECIMAL}, #{categoryId,jdbcType=BIGINT}, #{created,jdbcType=TIMESTAMP}, 
       #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.Product" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.Product" useGeneratedKeys="true">
     insert into product
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="productId != null">
@@ -81,7 +81,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.model.Product">
+  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.po.Product">
     update product
     <set>
       <if test="productId != null">
@@ -108,7 +108,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.model.Product">
+  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.po.Product">
     update product
     set product_id = #{productId,jdbcType=BIGINT},
       `name` = #{name,jdbcType=VARCHAR},
@@ -119,7 +119,7 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectAll" resultType="com.howdev.biz.model.Product">
+  <select id="selectAll" resultType="com.howdev.biz.po.Product">
     select
     <include refid="Base_Column_List" />
     from product

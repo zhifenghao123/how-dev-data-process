@@ -119,7 +119,7 @@
   <insert id="batchInsert">
     insert into user_order (order_id, user_id, order_number, total_price, status, created, updated)
     values
-    <foreach collection="orderDetails" item="item" separator=",">
+    <foreach collection="userOrders" item="item" separator=",">
       (#{item.orderId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.orderNumber,jdbcType=VARCHAR},
        #{item.totalPrice,jdbcType=DECIMAL}, #{item.status,jdbcType=INTEGER}, #{item.created,jdbcType=TIMESTAMP},
       #{item.updated,jdbcType=TIMESTAMP})

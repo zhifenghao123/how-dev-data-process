@@ -19,5 +19,5 @@ public interface UserOrderMapper {
 
     int updateByPrimaryKey(UserOrder record);
 
-    int batchInsert(@Param("userOrder") List<UserOrder> userOrders);
+    int batchInsert(@Param("userOrders") List<UserOrder> userOrders);
 }

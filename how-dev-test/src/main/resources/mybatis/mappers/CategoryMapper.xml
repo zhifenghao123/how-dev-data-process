@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.howdev.biz.mapper.CategoryMapper">
-  <resultMap id="BaseResultMap" type="com.howdev.biz.model.Category">
+  <resultMap id="BaseResultMap" type="com.howdev.biz.po.Category">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="category_id" jdbcType="BIGINT" property="categoryId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -22,13 +22,13 @@
     delete from category
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.Category" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.Category" useGeneratedKeys="true">
     insert into category (category_id, `name`, description, 
       created, updated)
     values (#{categoryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.Category" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.Category" useGeneratedKeys="true">
     insert into category
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="categoryId != null">
@@ -65,7 +65,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.model.Category">
+  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.po.Category">
     update category
     <set>
       <if test="categoryId != null">
@@ -86,7 +86,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.model.Category">
+  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.po.Category">
     update category
     set category_id = #{categoryId,jdbcType=BIGINT},
       `name` = #{name,jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectAll" resultType="com.howdev.biz.model.Category">
+  <select id="selectAll" resultType="com.howdev.biz.po.Category">
     select
     <include refid="Base_Column_List" />
     from category

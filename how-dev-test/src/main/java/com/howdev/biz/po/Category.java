@@ -1,4 +1,4 @@
-package com.howdev.biz.model;
+package com.howdev.biz.po;
 
 import java.io.Serializable;
 import java.util.Date;

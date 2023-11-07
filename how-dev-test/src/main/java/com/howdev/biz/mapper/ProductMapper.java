@@ -2,7 +2,7 @@ package com.howdev.biz.mapper;
 
 import java.util.List;
 
-import com.howdev.biz.model.Product;
+import com.howdev.biz.po.Product;
 
 public interface ProductMapper {
     int deleteByPrimaryKey(Long id);

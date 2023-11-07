@@ -1,5 +1,7 @@
 package com.howdev.biz.mapper;
 
+import java.util.List;
+
 import com.howdev.biz.model.Category;
 
 public interface CategoryMapper {
@@ -14,4 +16,6 @@ public interface CategoryMapper {
     int updateByPrimaryKeySelective(Category record);
 
     int updateByPrimaryKey(Category record);
+
+    List<Category> selectAll();
 }

@@ -6,12 +6,13 @@
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="order_number" jdbcType="VARCHAR" property="orderNumber" />
+    <result column="total_price" jdbcType="VARCHAR" property="totalPrice" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_id, user_id, order_number, `status`, created, updated
+    id, order_id, user_id, order_number, total_price, `status`, created, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -24,10 +25,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.UserOrder" useGeneratedKeys="true">
-    insert into user_order (order_id, user_id, order_number, 
+    insert into user_order (order_id, user_id, order_number, total_price,
       `status`, created, updated
       )
-    values (#{orderId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{orderNumber,jdbcType=VARCHAR}, 
+    values (#{orderId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{orderNumber,jdbcType=VARCHAR}, #{totalPrice,jdbcType=DECIMAL},
       #{status,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -42,6 +43,9 @@
       </if>
       <if test="orderNumber != null">
         order_number,
+      </if>
+      <if test="totalPrice != null">
+        total_price,
       </if>
       <if test="status != null">
         `status`,
@@ -86,6 +90,9 @@
       <if test="orderNumber != null">
         order_number = #{orderNumber,jdbcType=VARCHAR},
       </if>
+      <if test="totalPrice != null">
+        total_price = #{totalPrice,jdbcType=DECIMAL},
+      </if>
       <if test="status != null">
         `status` = #{status,jdbcType=INTEGER},
       </if>
@@ -103,9 +110,19 @@
     set order_id = #{orderId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       order_number = #{orderNumber,jdbcType=VARCHAR},
+      total_price = #{totalPrice,jdbcType=DECIMAL},
       `status` = #{status,jdbcType=INTEGER},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <insert id="batchInsert">
+    insert into user_order (order_id, user_id, order_number, total_price, status, created, updated)
+    values
+    <foreach collection="orderDetails" item="item" separator=",">
+      (#{item.orderId,jdbcType=BIGINT}, #{item.userId,jdbcType=BIGINT}, #{item.orderNumber,jdbcType=VARCHAR},
+       #{item.totalPrice,jdbcType=DECIMAL}, #{item.status,jdbcType=INTEGER}, #{item.created,jdbcType=TIMESTAMP},
+      #{item.updated,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
 </mapper>

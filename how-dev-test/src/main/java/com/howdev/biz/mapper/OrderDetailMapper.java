@@ -1,5 +1,9 @@
 package com.howdev.biz.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.howdev.biz.model.OrderDetail;
 
 public interface OrderDetailMapper {
@@ -14,4 +18,6 @@ public interface OrderDetailMapper {
     int updateByPrimaryKeySelective(OrderDetail record);
 
     int updateByPrimaryKey(OrderDetail record);
+
+    int batchInsert(@Param("orderDetails") List<OrderDetail> orderDetails);
 }

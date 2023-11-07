@@ -14,8 +14,8 @@ import com.howdev.biz.mapper.CategoryMapper;
 import com.howdev.biz.mapper.OrderDetailMapper;
 import com.howdev.biz.mapper.ProductMapper;
 import com.howdev.biz.mapper.UserOrderMapper;
-import com.howdev.biz.po.Category;
-import com.howdev.biz.po.Product;
+import com.howdev.biz.model.po.Category;
+import com.howdev.biz.model.po.Product;
 
 /**
  * UserOrderService class

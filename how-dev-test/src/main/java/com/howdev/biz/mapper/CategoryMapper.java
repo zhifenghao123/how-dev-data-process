@@ -2,7 +2,7 @@ package com.howdev.biz.mapper;
 
 import java.util.List;
 
-import com.howdev.biz.po.Category;
+import com.howdev.biz.model.po.Category;
 
 public interface CategoryMapper {
     int deleteByPrimaryKey(Long id);

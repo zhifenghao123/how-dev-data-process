@@ -1,6 +1,7 @@
 package com.howdev.biz.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -29,6 +30,11 @@ public class UserOrder implements Serializable {
      * 订单编号
      */
     private String orderNumber;
+
+    /**
+     * 订单总价
+     */
+    private BigDecimal totalPrice;
 
     /**
      * 状态，1-待付款，2-待发货，3-已发货，4-已签收，5-已取消

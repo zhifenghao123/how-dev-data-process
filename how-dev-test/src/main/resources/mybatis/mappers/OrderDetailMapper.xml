@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.howdev.biz.mapper.OrderDetailMapper">
-  <resultMap id="BaseResultMap" type="com.howdev.biz.po.OrderDetail">
+  <resultMap id="BaseResultMap" type="com.howdev.biz.model.po.OrderDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_detail_id" jdbcType="BIGINT" property="orderDetailId" />
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
@@ -24,7 +24,7 @@
     delete from order_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.OrderDetail" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.po.OrderDetail" useGeneratedKeys="true">
     insert into order_detail (order_detail_id, order_id, product_id, 
       quantity, price, created, 
       updated)
@@ -32,7 +32,7 @@
       #{quantity,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
       #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.po.OrderDetail" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.howdev.biz.model.po.OrderDetail" useGeneratedKeys="true">
     insert into order_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="orderDetailId != null">
@@ -81,7 +81,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.po.OrderDetail">
+  <update id="updateByPrimaryKeySelective" parameterType="com.howdev.biz.model.po.OrderDetail">
     update order_detail
     <set>
       <if test="orderDetailId != null">
@@ -108,7 +108,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.po.OrderDetail">
+  <update id="updateByPrimaryKey" parameterType="com.howdev.biz.model.po.OrderDetail">
     update order_detail
     set order_detail_id = #{orderDetailId,jdbcType=BIGINT},
       order_id = #{orderId,jdbcType=BIGINT},

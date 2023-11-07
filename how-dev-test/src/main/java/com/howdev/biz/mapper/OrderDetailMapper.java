@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.howdev.biz.po.OrderDetail;
+import com.howdev.biz.model.po.OrderDetail;
 
 public interface OrderDetailMapper {
     int deleteByPrimaryKey(Long id);

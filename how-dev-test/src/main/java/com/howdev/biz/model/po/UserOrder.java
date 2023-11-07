@@ -1,4 +1,4 @@
-package com.howdev.biz.po;
+package com.howdev.biz.model.po;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

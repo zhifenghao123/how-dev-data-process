@@ -14,6 +14,7 @@
         <module>how-dev-data-process-app</module>
         <module>how-dev-shell</module>
         <module>how-dev-test</module>
+        <module>how-dev-sql</module>
     </modules>
 
     <properties>

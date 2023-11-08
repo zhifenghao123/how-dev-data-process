@@ -1,9 +1,9 @@
-package com.howdev.spark.userproduct
+package com.howdev.sparkdev.userproduct
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{collect_list, struct}
 
-object UserProductAnalysis3 {
+object UserProductAnalysis {
   def main(args: Array[String]): Unit = {
     // 创建SparkSession
     val spark = SparkSession.builder()
@@ -42,12 +42,5 @@ object UserProductAnalysis3 {
         |groupedOrdersByUseridBase
         |""".stripMargin)
     frame.show()
-
-    val backTrackCmidSet = frame.select("user_id").collect().toSet
-    val customerIdString = backTrackCmidSet.mkString("(", ", ", ")")
-    println(customerIdString)
-
-
   }
-
 }

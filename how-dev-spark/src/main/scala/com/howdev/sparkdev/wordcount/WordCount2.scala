@@ -1,9 +1,10 @@
-package com.howdev.spark.wordcount
+package com.howdev.sparkdev.wordcount
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
-object WordCount1 {
+// mapreduce 格式
+object WordCount2 {
   def main(args: Array[String]): Unit = {
     // 创建spark运行的配置信息
     // setMaster 设置运行集群(local为本地)
@@ -47,5 +48,4 @@ object WordCount1 {
     // 关闭连接
     sc.stop()
   }
-
 }

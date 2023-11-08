@@ -123,7 +123,7 @@
     insert into order_detail (order_detail_id, order_id, product_id, quantity, price, created, updated)
     values
     <foreach collection="orderDetails" item="item" separator=",">
-      (#{item.orderDetailId,jdbcType=BIGINT}, #{item.orderId,jdbcType=BIGINT}, #{item.product_id,jdbcType=BIGINT},
+      (#{item.orderDetailId,jdbcType=BIGINT}, #{item.orderId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT},
       #{item.quantity,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.created,jdbcType=TIMESTAMP},
       #{item.updated,jdbcType=TIMESTAMP})
     </foreach>

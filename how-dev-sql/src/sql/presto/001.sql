@@ -2,7 +2,7 @@
 SELECT *
 FROM (
   VALUES
-    (1, 'Value 1'),
-    (2, 'Value 2'),
-    (3, 'Value 3')
+    (1, 'Value1'),
+    (2, 'Value2'),
+    (3, 'Value3')
 ) AS tmp_tb (id, val);

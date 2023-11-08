@@ -1,4 +1,4 @@
-package com.howdev.spark.userproduct
+package com.howdev.sparkdev.userproduct
 
 import org.apache.spark.sql.functions.{collect_list, struct}
 import org.apache.spark.sql.{Row, SparkSession}

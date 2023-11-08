@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.io.Resources;
@@ -105,6 +106,12 @@ public class UserOrderService {
     static UserOrderBO generateAndOrders(Long userId, Integer orderStatus, List<Product> allProducts,
                                          List<Long> filteredCategoryIds,
                                          List<Integer> filteredCategoryIdQuantities) {
+        try {
+            // sleep 100毫秒，避免两个订单太快，达到毫秒级别相同
+            TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (null == allProducts || allProducts.isEmpty()) {
             return null;
         }
@@ -114,7 +121,7 @@ public class UserOrderService {
                         filter(product -> filteredCategoryIds.contains(product.getCategoryId())).
                         collect(Collectors.groupingBy(Product::getCategoryId));
 
-        Long orderId = Long.valueOf(DateTimeUtil.formatNow(DateTimeUtil.yyyyMMddHHmmss_1_FORMAT) + "000");
+        Long orderId = Long.valueOf(DateTimeUtil.formatNow(DateTimeUtil.yyyyMMddHHmmssSSS_1_FORMAT) + "00");
 
         UserOrderBO userOrderBO = new UserOrderBO();
         userOrderBO.setUserId(userId);
@@ -137,7 +144,7 @@ public class UserOrderService {
                     Product product = products.get(j - 1);
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setOrderId(userOrderBO.getOrderId());
-                    orderDetail.setOrderDetailId(orderId + j);
+                    orderDetail.setOrderDetailId(orderId + (i * products.size() + j));
                     orderDetail.setProductId(product.getProductId());
                     orderDetail.setPrice(product.getPrice());
                     orderDetail.setQuantity(j == products.size()?  quantities - (j -1) : 1);
@@ -148,7 +155,7 @@ public class UserOrderService {
                     Product product = products.get(j -1);
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setOrderId(userOrderBO.getOrderId());
-                    orderDetail.setOrderDetailId(orderId + j);
+                    orderDetail.setOrderDetailId(orderId + (i * quantities + j));
                     orderDetail.setProductId(product.getProductId());
                     orderDetail.setPrice(product.getPrice());
                     orderDetail.setQuantity(1);

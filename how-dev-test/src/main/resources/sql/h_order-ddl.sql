@@ -22,7 +22,7 @@ CREATE TABLE `order_detail` (
   `created` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COMMENT='订单详情表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单详情表';
 
 --3.product(产品表)
 CREATE TABLE `product` (
@@ -35,7 +35,7 @@ CREATE TABLE `product` (
   `created` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='产品表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='产品表';
 
 --4.category(分类表)
 CREATE TABLE `category` (
@@ -46,4 +46,4 @@ CREATE TABLE `category` (
   `created` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';

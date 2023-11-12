@@ -3,7 +3,7 @@ package com.howdev.scala.function
 /**
  * 普通版本的函数式编程使用
  */
-object Function1 {
+object FunctionUse1 {
   def main(args: Array[String]): Unit = {
 
     testFuncVariableArgs

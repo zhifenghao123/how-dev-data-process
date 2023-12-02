@@ -5,6 +5,8 @@ import scala.util.control.Breaks
 object FunctionUse4 {
   def main(args: Array[String]): Unit = {
     testFuncitonAbstractControl()
+
+    testFuncitonClosure()
   }
 
   // 抽象控制
@@ -44,5 +46,44 @@ object FunctionUse4 {
         println("i = " + i)
       }
     }
+  }
+
+  // 函数闭包
+  def testFuncitonClosure() : Unit = {
+
+     // 函数时编程语言-闭包
+    // 自己的理解：闭包是一个环境，innerFunc包含了a，a被innerFunc包含进去后，别人用不了
+    def outerFunc(a : Int) = {
+      def innerFunc(b : Int ) = {
+        a + b
+      }
+      innerFunc _
+    }
+
+    var inner = outerFunc(2)
+    println(inner(4))
+
+    // 闭包的实现，在不同的Scala版本中是不一样的
+    // 在Scala 2.12之前，闭包使用的是匿名函数类完成的
+    // 在Scala 2.12之后，闭包使用的是改变函数的声明完成的
+
+
+    val name = "haozhifeng"
+    def test() = {
+      println(name)
+    }
+    // 没有造成闭包
+    test()
+
+    // 有了闭包，但不是因为name，而是因为test
+    val f = test _
+    f()
+
+    //总结：闭包的场景
+    // (1)内部函数使用了外部的数据，改变了数据的生命周期
+    // (2)将函数作为对象使用，改变函数本身的生命周期
+    // (3)所有的匿名函数都有闭包（匿名函数当对象了，符合了（2））
+    // (4)内部函数返回到外部使用也会有闭包
+
   }
 }

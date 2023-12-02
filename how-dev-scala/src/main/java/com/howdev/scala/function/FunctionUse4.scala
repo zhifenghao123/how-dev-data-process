@@ -9,6 +9,8 @@ object FunctionUse4 {
     testFuncitonClosure()
 
     testFuncitonCurry()
+
+    testFuncitonLaz()
   }
 
   // 抽象控制
@@ -125,5 +127,18 @@ object FunctionUse4 {
     test2(10)(20)  // 在函数调用上，和内部函数的调用相似
 
 
+  }
+
+  // 惰性函数
+  def testFuncitonLaz() : Unit = {
+    def test() : String = {
+      println("start exec test()")
+      "haozhifeng"
+    }
+
+    // val a = test()
+    lazy val a = test()
+    println("----------")
+    println(a)
   }
 }

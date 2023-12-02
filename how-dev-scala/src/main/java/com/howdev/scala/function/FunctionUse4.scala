@@ -7,6 +7,8 @@ object FunctionUse4 {
     testFuncitonAbstractControl()
 
     testFuncitonClosure()
+
+    testFuncitonCurry()
   }
 
   // 抽象控制
@@ -84,6 +86,44 @@ object FunctionUse4 {
     // (2)将函数作为对象使用，改变函数本身的生命周期
     // (3)所有的匿名函数都有闭包（匿名函数当对象了，符合了（2））
     // (4)内部函数返回到外部使用也会有闭包
+
+  }
+
+  // 函数式编程语言-函数柯里化（Curry）
+  def testFuncitonCurry() : Unit = {
+
+    def test(a : Int, b : Int) = {
+      for(i <- 1 to a) {
+        println(i)
+      }
+
+      for(i <- 1 to b) {
+        println(i)
+      }
+    }
+
+    val a1 = 3  // 需要2s
+    val b1 = 4  // 需要15min
+
+
+    // 函数的参数之间没有关联性，那么传值的时候要求同时传递，增加了耦合性，也增加了调用的难度
+    // （a1很快计算完了，但是要一直等到有值才可以）
+    test(a1, b1)
+
+    // 所谓的柯里化，就是为了函数简单化，将无关的参数进行分离，可以设定多个参数列表
+    def test2(a : Int)(b : Int) : Unit = {
+      for(i <- 1 to a) {
+        println(i)
+      }
+
+      for(i <- 1 to b) {
+        println(i)
+      }
+    }
+
+    val intToUnit : Int => Unit = test2(10)
+    test2(10)(20)  // 在函数调用上，和内部函数的调用相似
+
 
   }
 }

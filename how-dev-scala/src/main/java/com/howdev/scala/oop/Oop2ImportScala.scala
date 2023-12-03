@@ -1,5 +1,5 @@
 package com.howdev.scala.oop
-object ImportTestScala {
+object Oop2ImportScala {
   def main(args: Array[String]): Unit = {
     // 1.可以导包
     import com.howdev.scala.oop

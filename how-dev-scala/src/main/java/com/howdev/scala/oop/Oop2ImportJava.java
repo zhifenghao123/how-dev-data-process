@@ -1,12 +1,12 @@
 package com.howdev.scala.oop;
 
 /**
- * ImportTestJava class
+ * Oop2ImportJava class
  *
  * @author haozhifeng
  * @date 2023/12/03
  */
-public class ImportTestJava {
+public class Oop2ImportJava {
     /**
      * Java
      * 导入：import

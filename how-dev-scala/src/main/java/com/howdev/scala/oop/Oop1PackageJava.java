@@ -1,12 +1,12 @@
 package com.howdev.scala.oop;
 
 /**
- * PackageTestJava class
+ * Oop1PackageJava class
  *
  * @author haozhifeng
  * @date 2023/12/02
  */
-public class PackageTestJava {
+public class Oop1PackageJava {
     public static void main(String[] args) {
         /**
          * Java

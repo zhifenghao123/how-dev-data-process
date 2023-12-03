@@ -2,7 +2,7 @@ package com
 package howdev
 package scala {
   package oop {
-    object PackageTestScala {
+    object Oop1PackageScala {
       def main(args: Array[String]): Unit = {
         testPackageObjectFunc()
       }

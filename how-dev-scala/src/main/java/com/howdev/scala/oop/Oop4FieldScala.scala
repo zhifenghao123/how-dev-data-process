@@ -2,7 +2,7 @@ package com.howdev.scala.oop
 
 import scala.beans.BeanProperty
 
-object Oop3FieldScala {
+object Oop4FieldScala {
   def main(args: Array[String]): Unit = {
 
     val user = new User

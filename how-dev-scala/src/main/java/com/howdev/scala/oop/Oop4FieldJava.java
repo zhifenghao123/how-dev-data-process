@@ -1,12 +1,12 @@
 package com.howdev.scala.oop;
 
 /**
- * Oop3FieldJava class
+ * Oop4FieldJava class
  *
  * @author haozhifeng
  * @date 2023/12/03
  */
-public class Oop3FieldJava {
+public class Oop4FieldJava {
     public static void main(String[] args) {
         /**
          * Scala中

@@ -17,3 +17,6 @@
 
 （6）import类时，用于屏蔽类
      import java.sql.{Date=>_, _}
+
+（7）属性默认初始化
+     var name : String = _

@@ -43,7 +43,7 @@ object Oop5AcessScala {
       var user = new User()
       // println(user.name)
       println(user.age)
-       println(user.email)
+      //println(user.email)
       println(user.address)
     }
   }

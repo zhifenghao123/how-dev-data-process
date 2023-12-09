@@ -77,13 +77,13 @@ object ValueTransformation extends SimpleSparkContext{
   def mapPartitionsWithIndex(): Unit ={
     val dataRdd: RDD[Int] = sparkContext.makeRDD(List(1, 2, 3, 4))
 
-    val dataRdd1 = dataRdd.mapPartitionsWithIndex(
-      (index, datas) => {
-        datas.map( index , _)
-      }
-    )
-
-    dataRdd1.collect().foreach(println)
+//    val dataRdd1 = dataRdd.mapPartitionsWithIndex(
+//      (index, datas) => {
+//        datas.map( index , _)
+//      }
+//    )
+//
+//    dataRdd1.collect().foreach(println)
 
   }
 }

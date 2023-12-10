@@ -20,7 +20,7 @@ public class HaoEncryptor {
         String chipperTextFileToSave = dataFileDirectory + "hdataFile/" + algorithmName + "/user_bill_info-encrypt.csv";
         String plainTextFileToSave = dataFileDirectory + "hdataFile/" + algorithmName + "/user_bill_info-decrypt.csv";
 
-        SymmetryEncryptor.encryptFile(algorithmName, key, originalFile, chipperTextFileToSave);
+        //SymmetryEncryptor.encryptFile(algorithmName, key, originalFile, chipperTextFileToSave);
         SymmetryEncryptor.decryptFile(algorithmName, key, chipperTextFileToSave, plainTextFileToSave);
     }
 }

@@ -1,7 +1,6 @@
 package com.howdev.sparkdev.userinfo
 
-import org.apache.spark.sql.catalyst.dsl.expressions.StringToAttributeConversionHelper
-import org.apache.spark.sql.functions.{col, lit}
+import org.apache.spark.sql.functions.{col, when}
 import org.apache.spark.sql.{SaveMode, SparkSession}
 
 object UserInfoSync {
@@ -27,15 +26,16 @@ object UserInfoSync {
 
     val replacedUserInfoDF1 = userInfoDF.na.fill("", Seq("userName", "password", "nickName"))
 
-    // 将age列中值为"null"的替换为默认值1
-/*    val replacedUserInfoDF2 = replacedUserInfoDF1.withColumn("age", when(col("age").equals("null"), 1).otherwise(col
-    ("age")))*/
+    val replacedUserInfoDF2 = replacedUserInfoDF1.withColumn("gender", when(col("gender") === "NULL", null).otherwise(col("gender")))
+    val replacedUserInfoDF3 = replacedUserInfoDF2.withColumn("age", when(col("age") === "NULL", null).otherwise(col
+    ("age")))
+    val replacedUserInfoDF4 = replacedUserInfoDF3.withColumn("phoneNumber", when(col("phoneNumber") === "NULL", null).otherwise(col
+    ("phoneNumber")))
+    val replacedUserInfoDF5 = replacedUserInfoDF4.withColumn("email", when(col("email") === "NULL", null).otherwise(col
+    ("email")))
 
-    // 将gender列中值为"null"的替换为默认值unknown
-/*    val userInfoFinalDF = replacedUserInfoDF2.withColumn("gender", when(col("gender").equals("null"), "unknown")
-      .otherwise(col("gender")))*/
 
-    val userInfoFinalDF = replacedUserInfoDF1;
+    val userInfoFinalDF = replacedUserInfoDF5;
 
 
     userInfoFinalDF.show()

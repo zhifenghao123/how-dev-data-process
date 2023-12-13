@@ -2,9 +2,9 @@ package com.howdev.util.encrypt;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Base64;
 import java.util.Objects;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * EncryptKeyPair class
@@ -34,7 +34,7 @@ public class EncryptKeyPair {
             return null;
         }
         byte[] privateKeyEncoded = privateKey.getEncoded();
-        String privateEncodeString = Base64.encode(privateKeyEncoded);
+        String privateEncodeString = Base64.getEncoder().encodeToString(privateKeyEncoded);
         return privateEncodeString;
     }
 
@@ -50,7 +50,7 @@ public class EncryptKeyPair {
             return null;
         }
         byte[] publicKeyEncoded = publicKey.getEncoded();
-        String publicEncodeString = Base64.encode(publicKeyEncoded);
+        String publicEncodeString = Base64.getEncoder().encodeToString(publicKeyEncoded);
 
         return publicEncodeString;
     }

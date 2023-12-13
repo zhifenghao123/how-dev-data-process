@@ -19,6 +19,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -26,9 +27,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.FileUtils;
-
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * AsymmetryEncryptor class
@@ -124,12 +122,7 @@ public class AsymmetryEncryptor {
         }
         //此类表示根据 ASN.1 类型 SubjectPublicKeyInfo 进行编码的公用密钥的 ASN.1 编码
         X509EncodedKeySpec x509EncodedKeySpec;
-        try {
-            x509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(publicEncodeString));
-        } catch (Base64DecodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+        x509EncodedKeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicEncodeString));
         try {
             return keyFactory.generatePublic(x509EncodedKeySpec);
         } catch (InvalidKeySpecException e) {
@@ -166,12 +159,7 @@ public class AsymmetryEncryptor {
         }
         //创建私钥key的规则  此类表示按照 ASN.1 类型 PrivateKeyInfo 进行编码的专用密钥的 ASN.1 编码
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = null;
-        try {
-            pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.decode(privateEncodeString));
-        } catch (Base64DecodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+        pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateEncodeString));
         //私钥对象
         try {
             return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
@@ -212,7 +200,7 @@ public class AsymmetryEncryptor {
             e.printStackTrace();
             return null;
         }
-        return Base64.encode(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     /**
@@ -241,8 +229,8 @@ public class AsymmetryEncryptor {
         }
         byte[] bytes1;
         try {
-            bytes1 = cipher.doFinal(Base64.decode(cipherText));
-        } catch (IllegalBlockSizeException | BadPaddingException | Base64DecodingException e) {
+            bytes1 = cipher.doFinal(Base64.getDecoder().decode(cipherText));
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
             return null;
         }

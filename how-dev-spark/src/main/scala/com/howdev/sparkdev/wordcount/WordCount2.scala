@@ -1,4 +1,4 @@
-package com.howdev.spark.wordcount
+package com.howdev.sparkdev.wordcount
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -16,7 +16,7 @@ object WordCount2 {
 
     println("========原始数据===============")
     // 读取指定文件数据
-    val txtFile: RDD[String] = sc.textFile("how-dev-spark/test-datasets/word.txt")
+    val txtFile: RDD[String] = sc.textFile("how-dev-spark/test-datasets/sparkdev/wordcount/word.txt")
     txtFile.foreach(println)
 
     println("======切割+扁平化处理==================")

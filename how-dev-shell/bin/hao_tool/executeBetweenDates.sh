@@ -6,7 +6,7 @@ DATE:2023-11-01
 DESCRIBE:根据指定的两个日期，生成两个日期日期之间的所有日期，且格式为yyyyMMdd
 INFO
 
-function get_dates_after() {
+function execute_between_dates() {
   # 定义起始日期和结束日期
   start_date=$1
   end_date=$2
@@ -24,4 +24,4 @@ function get_dates_after() {
 }
 
 # 调用函数并传递输入起始日期和结束日期
-get_dates_after "20230301" "20230331"
+execute_between_dates "20230301" "20230331"

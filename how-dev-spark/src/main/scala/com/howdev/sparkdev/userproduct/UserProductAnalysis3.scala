@@ -1,4 +1,4 @@
-package com.howdev.spark.userproduct
+package com.howdev.sparkdev.userproduct
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{collect_list, struct}
@@ -15,7 +15,7 @@ object UserProductAnalysis3 {
     //val orders = spark.read.csv("test-datasets/user_product.csv")
     val ordersDf = spark.read
       .option("header", "true")
-      .csv("how-dev-spark/test-datasets/user_product2.csv")
+      .csv("how-dev-spark/test-datasets/sparkdev/userproduct/user_product2.csv")
 
     ordersDf.show()
 

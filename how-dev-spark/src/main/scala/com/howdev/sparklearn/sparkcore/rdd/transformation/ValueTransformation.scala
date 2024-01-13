@@ -6,7 +6,8 @@ import org.apache.spark.rdd.RDD
 object ValueTransformation extends SimpleSparkContext{
   def main(args: Array[String]): Unit = {
     //mapTest()
-    mapPartitionsTest
+    //mapPartitionsTest
+    mapPartitionsWithIndexTest
   }
 
   /**
@@ -74,16 +75,24 @@ object ValueTransformation extends SimpleSparkContext{
    *  将待处理的数据以分区为单位发送到计算节点进行处理，这里的处理是指可以进行任意的处理，哪怕是过滤数据，在处理时同时可以获取当前分区索引。
    *
    */
-  def mapPartitionsWithIndex(): Unit ={
-    val dataRdd: RDD[Int] = sparkContext.makeRDD(List(1, 2, 3, 4))
+  def mapPartitionsWithIndexTest(): Unit ={
+    val dataRdd: RDD[Int] = sparkContext.makeRDD(List(1, 2, 3, 4), 2)
+    // [1, 2] [3, 4]
 
-//    val dataRdd1 = dataRdd.mapPartitionsWithIndex(
-//      (index, datas) => {
-//        datas.map( index , _)
-//      }
-//    )
-//
-//    dataRdd1.collect().foreach(println)
+    // 返回1号分区的所有数据
+    val dataRdd1 = dataRdd.mapPartitionsWithIndex(
+      // 分区索引编号，该分区的所有数据
+      (index, iter) => {
+        if (index == 1) {
+          iter
+        } else {
+          Nil.iterator
+        }
+      }
+    )
+
+    dataRdd1.collect().foreach(println)
+    println("----")
 
   }
 }

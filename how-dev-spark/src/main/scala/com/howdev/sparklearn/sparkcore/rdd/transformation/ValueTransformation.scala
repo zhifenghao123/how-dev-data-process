@@ -80,7 +80,7 @@ object ValueTransformation extends SimpleSparkContext{
     // [1, 2] [3, 4]
 
     // 返回1号分区的所有数据
-    val dataRdd1 = dataRdd.mapPartitionsWithIndex(
+    val dataRddOfPartition1 = dataRdd.mapPartitionsWithIndex(
       // 分区索引编号，该分区的所有数据
       (index, iter) => {
         if (index == 1) {
@@ -91,8 +91,22 @@ object ValueTransformation extends SimpleSparkContext{
       }
     )
 
-    dataRdd1.collect().foreach(println)
+    dataRddOfPartition1.collect().foreach(println)
+
     println("----")
+
+    val dataRdd2: RDD[Int] = sparkContext.makeRDD(List(1, 2, 3, 4, 5, 6))
+    // 每一个数据以及对应所在的分区号
+    val partitionIndexToDataRdd = dataRdd2.mapPartitionsWithIndex(
+      (index, iter) => {
+        iter.map(
+          num => {
+            (num, index)
+          }
+        )
+      }
+    )
+    partitionIndexToDataRdd.collect().foreach(println)
 
   }
 }

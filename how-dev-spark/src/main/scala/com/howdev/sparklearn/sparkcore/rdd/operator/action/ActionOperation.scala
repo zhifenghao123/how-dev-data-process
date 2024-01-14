@@ -1,4 +1,4 @@
-package com.howdev.sparklearn.sparkcore.rdd.action
+package com.howdev.sparklearn.sparkcore.rdd.operator.action
 
 import com.howdev.sparklearn.SimpleSparkContext
 import org.apache.spark.rdd.RDD

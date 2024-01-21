@@ -1,4 +1,4 @@
-package com.howdev.sparklearn.sparkcore.rdd.transformation
+package com.howdev.sparklearn.sparkcore.rdd.operator.transformation
 
 import com.howdev.sparklearn.SimpleSparkContext
 import org.apache.spark.rdd.RDD

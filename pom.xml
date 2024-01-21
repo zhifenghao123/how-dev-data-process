@@ -15,6 +15,7 @@
         <module>how-dev-shell</module>
         <module>how-dev-test</module>
         <module>how-dev-sql</module>
+        <module>how-dev-hadoop</module>
     </modules>
 
     <properties>

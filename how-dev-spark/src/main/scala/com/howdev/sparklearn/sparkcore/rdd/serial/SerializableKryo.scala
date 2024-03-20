@@ -27,7 +27,7 @@ case object SerializableKryo {
     val sparkContext: SparkContext = new SparkContext(conf)
 
     val rdd: RDD[String] = sparkContext.makeRDD(Array("hello world", "spark", "hive", "haozhifeng"))
-    val search = new Search("hello")
+    val search = new Search2("hello")
     // 函数传递，打印： 函数传递，打印： ERROR Task not serializable
     search.getMatch1(rdd).collect().foreach(println)
 
@@ -41,7 +41,7 @@ case object SerializableKryo {
 // class Search(query:String) {  因为没有序列化会报错
 // 在Scala中，类的构造参数其实是类的属性，构造参数需要进行闭包检测，其实等同于类需要进行闭包检测
 // case class Search(query:String) {
-class Search(query:String) extends Serializable {
+class Search2(query:String) extends Serializable {
   def isMatch(s: String): Boolean = {
     s.contains(query)
   }

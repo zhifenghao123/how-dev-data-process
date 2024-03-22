@@ -21,6 +21,7 @@ trait SimpleSpark extends BaseEnvNew {
 
 trait BaseEnvNew extends Serializable {
   private var _appName = this.getClass.getSimpleName.filter(!_.equals('$'))
+  protected def defaultMaster = "local[*]"
 
   protected final def appName: String = _appName
   protected def setAppName(name: String) = _appName = name
@@ -29,6 +30,11 @@ trait BaseEnvNew extends Serializable {
 
   protected def sparkConf = {
     val sparkConf = new SparkConf().setAppName(_appName).setAll(sparkConfOpts)
+    // Set default master if not set
+    if(sparkConf.get("spark.master", null) == null) {
+      println("spark.master is not set. Setting it to a default value.")
+      sparkConf.setMaster(defaultMaster)
+    }
     sparkConf
   }
 }

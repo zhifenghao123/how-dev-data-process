@@ -10,11 +10,11 @@ object SparkSqlRowTest extends SimpleSpark{
   def main(args: Array[String]): Unit = {
 
     val rows: Seq[Row] = Seq(
-      Row("id1", "event1", "2023-03-02 10:00:00.0"),
-      Row("id2", "event2","2023-01-01 09:01:00.0"),
-      Row("id3", "event1", "2023-02-01 11:00:00.0"),
-      Row("id4", "event3", "2023-04-01 16:00:00.0"),
-      Row("id5", "event2","2023-01-01 09:00:00.0")
+      Row(1L, "event1", "2023-03-02 10:00:00.0"),
+      Row(2L, "event2","2023-01-01 09:01:00.0"),
+      Row(3L, "event1", "2023-02-01 11:00:00.0"),
+      Row(4L, "event3", "2023-04-01 16:00:00.0"),
+      Row(5L, "event2","2023-01-01 09:00:00.0")
     )
 
     val schema: StructType = StructType(Seq(

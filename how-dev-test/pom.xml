@@ -26,14 +26,12 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
         </dependency>
 
         <!-- Logback依赖 -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.9</version> <!-- 使用你需要的Logback版本 -->
         </dependency>
     </dependencies>
 

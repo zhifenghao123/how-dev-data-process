@@ -1,0 +1,32 @@
+<configuration>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%blue(%thread)] %highlight(%-5level) %green(%logger{60}) %blue(%file:%line) %X{sourceThread} - %cyan(%msg%n)"/>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+
+
+    <logger name="akka" level="INFO">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.apache.kafka" level="INFO">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.apache.hadoop" level="INFO">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="INFO">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline" level="ERROR">
+        <appender-ref ref="console"/>
+    </logger>
+</configuration>

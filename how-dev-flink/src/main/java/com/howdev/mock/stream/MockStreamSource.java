@@ -27,7 +27,8 @@ public class MockStreamSource {
             while (running) {
                 Transaction transaction = GenerateTransactionUtil.generateTransaction();
                 // Date currentTime = new Date();
-                String currentTime = df.format(new Date());
+                //String currentTime = df.format(new Date());
+                String currentTime = df.format(transaction.getOccurredTime());
 
                 Row row = Row.of(id, transaction.getUserId(), transaction.getAmount(), transaction.getType(), transaction.getOccurredLocation(), currentTime);
                 sourceContext.collect(row);

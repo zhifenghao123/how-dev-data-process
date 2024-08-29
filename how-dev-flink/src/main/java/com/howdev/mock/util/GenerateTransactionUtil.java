@@ -3,6 +3,7 @@ package com.howdev.mock.util;
 import com.howdev.mock.dto.Transaction;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -100,5 +101,17 @@ public class GenerateTransactionUtil {
         // transaction.setOccurredTime(date);
         transaction.setBalance(balance.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString());
         return transaction;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Transaction transaction = generateTransaction();
+        Date occurredTime = new Date();
+        transaction.setOccurredTime(occurredTime);
+        transaction.setOccurredTimeStamp(occurredTime.getTime());
+        String jsonString = transaction.toJsonString();
+        System.out.println(jsonString);
+
+        Transaction transaction2 = new Transaction(jsonString);
+        System.out.println(transaction2.toJsonString());
     }
 }

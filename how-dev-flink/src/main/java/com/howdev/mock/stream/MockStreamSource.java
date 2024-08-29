@@ -84,8 +84,59 @@ public class MockStreamSource {
 
                 Date currentTime = new Date();
                 transaction.setOccurredTime(currentTime);
+                transaction.setOccurredTimeStamp(currentTime.getTime());
 
                 sourceContext.collect(transaction);
+
+
+                //System.out.println(transaction);
+
+                // 每秒发送两4数据
+                Thread.sleep(250);
+            }
+        }
+
+        public void cancel() {
+            running = false;
+        }
+    }
+
+    public static class MyParallelTransactionStrStreamSource implements ParallelSourceFunction<String> {
+
+        /**
+         * A flag that indicates the running state.
+         */
+        private boolean running = false;
+        //long id = 0L;
+        private static AtomicLong id = new AtomicLong(0L);
+
+
+        public void run(SourceContext<String> sourceContext) throws Exception {
+            running = true;
+            //long id = 0L;
+
+
+            while (running) {
+                Transaction transaction = GenerateTransactionUtil.generateTransaction();
+
+                long nextId = id.getAndIncrement();
+                if (nextId == Long.MAX_VALUE) {
+                    id.set(0);
+                }
+                transaction.setId(nextId);
+
+//                transaction.setId(id);
+//                id += 1;
+//                if (id == Long.MAX_VALUE) {
+//                    id = 0;
+//                }
+
+
+                Date currentTime = new Date();
+                transaction.setOccurredTime(currentTime);
+                transaction.setOccurredTimeStamp(currentTime.getTime());
+
+                sourceContext.collect(transaction.toJsonString());
 
 
                 //System.out.println(transaction);

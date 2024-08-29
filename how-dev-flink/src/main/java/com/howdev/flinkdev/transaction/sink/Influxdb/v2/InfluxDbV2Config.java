@@ -1,36 +1,30 @@
-package com.howdev.flinkdev.transaction.sink.Influxdb.v1;
+package com.howdev.flinkdev.transaction.sink.Influxdb.v2;
 
 import org.apache.flink.util.Preconditions;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-public class InfluxDbV1Config implements Serializable {
+public class InfluxDbV2Config implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final int DEFAULT_BATCH_ACTIONS = 2000;
     private static final int DEFAULT_FLUSH_DURATION = 100;
 
     private String url;
-    private String username;
-    private String password;
-    private String database;
-    private int batchActions;
-    private int flushDuration;
-    private TimeUnit flushDurationTimeUnit;
+    private String token;
+    private String org;
+    private String bucket;
     private boolean enableGzip;
 
-    public InfluxDbV1Config(InfluxDbV1Config.Builder builder) {
+    public InfluxDbV2Config(InfluxDbV2Config.Builder builder) {
         Preconditions.checkArgument(builder != null, "InfluxDBConfig builder can not be null");
 
         this.url = Preconditions.checkNotNull(builder.getUrl(), "host can not be null");
-        this.username = Preconditions.checkNotNull(builder.getUsername(), "username can not be null");
-        this.password = Preconditions.checkNotNull(builder.getPassword(), "password can not be null");
-        this.database = Preconditions.checkNotNull(builder.getDatabase(), "database name can not be null");
+        this.token = Preconditions.checkNotNull(builder.getUsername(), "token can not be null");
+        this.org = Preconditions.checkNotNull(builder.getPassword(), "org can not be null");
+        this.bucket = Preconditions.checkNotNull(builder.getDatabase(), "bucket name can not be null");
 
-        this.batchActions = builder.getBatchActions();
-        this.flushDuration = builder.getFlushDuration();
-        this.flushDurationTimeUnit = builder.getFlushDurationTimeUnit();
         this.enableGzip = builder.isEnableGzip();
     }
 
@@ -38,28 +32,16 @@ public class InfluxDbV1Config implements Serializable {
         return url;
     }
 
-    public String getUsername() {
-        return username;
+    public String getToken() {
+        return token;
     }
 
-    public String getPassword() {
-        return password;
+    public String getOrg() {
+        return org;
     }
 
-    public String getDatabase() {
-        return database;
-    }
-
-    public int getBatchActions() {
-        return batchActions;
-    }
-
-    public int getFlushDuration() {
-        return flushDuration;
-    }
-
-    public TimeUnit getFlushDurationTimeUnit() {
-        return flushDurationTimeUnit;
+    public String getBucket() {
+        return bucket;
     }
 
     public boolean isEnableGzip() {
@@ -67,7 +49,7 @@ public class InfluxDbV1Config implements Serializable {
     }
 
     /**
-     * Creates a new {@link InfluxDbV1Config.Builder} instance.
+     * Creates a new {@link InfluxDbV2Config.Builder} instance.
      * <p/>
      * This is a convenience method for {@code new InfluxDBConfig.Builder()}.
      *
@@ -90,10 +72,8 @@ public class InfluxDbV1Config implements Serializable {
         private String username;
         private String password;
         private String database;
-        private int batchActions = DEFAULT_BATCH_ACTIONS;
-        private int flushDuration = DEFAULT_FLUSH_DURATION;
-        private TimeUnit flushDurationTimeUnit = TimeUnit.MILLISECONDS;
         private boolean enableGzip = false;
+
         /**
          * Creates a builder
          *
@@ -116,7 +96,7 @@ public class InfluxDbV1Config implements Serializable {
          * @param url the url to connect to
          * @return this Builder to use it fluent
          */
-        public InfluxDbV1Config.Builder url(String url) {
+        public InfluxDbV2Config.Builder url(String url) {
             this.url = url;
             return this;
         }
@@ -127,7 +107,7 @@ public class InfluxDbV1Config implements Serializable {
          * @param username the username which is used to authorize against the influxDB instance
          * @return this Builder to use it fluent
          */
-        public InfluxDbV1Config.Builder username(String username) {
+        public InfluxDbV2Config.Builder username(String username) {
             this.username = username;
             return this;
         }
@@ -139,7 +119,7 @@ public class InfluxDbV1Config implements Serializable {
          *                 instance
          * @return this Builder to use it fluent
          */
-        public InfluxDbV1Config.Builder password(String password) {
+        public InfluxDbV2Config.Builder password(String password) {
             this.password = password;
             return this;
         }
@@ -150,35 +130,11 @@ public class InfluxDbV1Config implements Serializable {
          * @param database the name of the database to write
          * @return this Builder to use it fluent
          */
-        public InfluxDbV1Config.Builder database(String database) {
+        public InfluxDbV2Config.Builder database(String database) {
             this.database = database;
             return this;
         }
 
-        /**
-         * Sets when to flush a new bulk request based on the number of batch actions currently added.
-         * Defaults to <tt>DEFAULT_BATCH_ACTIONS</tt>. Can be set to <tt>-1</tt> to disable it.
-         *
-         * @param batchActions number of Points written after which a write must happen.
-         * @return this Builder to use it fluent
-         */
-        public InfluxDbV1Config.Builder batchActions(int batchActions) {
-            this.batchActions = batchActions;
-            return this;
-        }
-
-        /**
-         * Sets a flush interval flushing *any* bulk actions pending if the interval passes.
-         *
-         * @param flushDuration         the flush duration
-         * @param flushDurationTimeUnit the TimeUnit of the flush duration
-         * @return this Builder to use it fluent
-         */
-        public Builder flushDuration(int flushDuration, TimeUnit flushDurationTimeUnit) {
-            this.flushDuration = flushDuration;
-            this.flushDurationTimeUnit = flushDurationTimeUnit;
-            return this;
-        }
 
         /**
          * Enable Gzip compress for http request body.
@@ -186,7 +142,7 @@ public class InfluxDbV1Config implements Serializable {
          * @param enableGzip the enableGzip value
          * @return this Builder to use it fluent
          */
-        public InfluxDbV1Config.Builder enableGzip(boolean enableGzip) {
+        public InfluxDbV2Config.Builder enableGzip(boolean enableGzip) {
             this.enableGzip = enableGzip;
             return this;
         }
@@ -196,8 +152,8 @@ public class InfluxDbV1Config implements Serializable {
          *
          * @return the InfluxDBConfig instance.
          */
-        public InfluxDbV1Config build() {
-            return new InfluxDbV1Config(this);
+        public InfluxDbV2Config build() {
+            return new InfluxDbV2Config(this);
         }
 
 
@@ -217,21 +173,8 @@ public class InfluxDbV1Config implements Serializable {
             return database;
         }
 
-        public int getBatchActions() {
-            return batchActions;
-        }
-
-        public int getFlushDuration() {
-            return flushDuration;
-        }
-
-        public TimeUnit getFlushDurationTimeUnit() {
-            return flushDurationTimeUnit;
-        }
-
         public boolean isEnableGzip() {
             return enableGzip;
         }
-
     }
 }

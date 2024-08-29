@@ -2,26 +2,23 @@ package com.howdev.flinkdev.transaction.sink.Influxdb.v1;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import org.apache.flink.util.CollectionUtil;
 import org.apache.flink.util.Preconditions;
-import org.apache.flink.util.StringUtils;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 
-import java.util.concurrent.TimeUnit;
-public class InfluxDBSink extends RichSinkFunction<InfluxDBPoint> {
+public class InfluxDbV1Sink extends RichSinkFunction<Point> {
 
     private transient InfluxDB influxDBClient;
-    private final InfluxDBConfig influxDBConfig;
+    private final InfluxDbV1Config influxDBV1Config;
 
     /**
-     * Creates a new {@link InfluxDBSink} that connects to the InfluxDB server.
+     * Creates a new {@link InfluxDbV1Sink} that connects to the InfluxDB server.
      *
-     * @param influxDBConfig The configuration of {@link InfluxDBConfig}
+     * @param influxDBV1Config The configuration of {@link InfluxDbV1Config}
      */
-    public InfluxDBSink(InfluxDBConfig influxDBConfig) {
-        this.influxDBConfig = Preconditions.checkNotNull(influxDBConfig, "InfluxDB client config should not be null");
+    public InfluxDbV1Sink(InfluxDbV1Config influxDBV1Config) {
+        this.influxDBV1Config = Preconditions.checkNotNull(influxDBV1Config, "InfluxDB client config should not be null");
     }
 
     /**
@@ -31,35 +28,24 @@ public class InfluxDBSink extends RichSinkFunction<InfluxDBPoint> {
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
 
-
-        //OkHttpClient.Builder okHttpClient = HttpClient.trustAllSslClient(new OkHttpClient());
-        //influxDBClient = InfluxDBFactory.connect(influxDBConfig.getUrl(), influxDBConfig.getUsername(), influxDBConfig.getPassword(), okHttpClient);
-
-        //influxDBClient = InfluxDBFactory.connect(influxDBConfig.getUrl(), influxDBConfig.getUsername(), influxDBConfig.getPassword());
-
-        String url = "http://127.0.0.1:8086";
-        String token = "bkWXRkEVhLnkkSdiZ2uze15PqvkXXB9qYpjKpPCNseebhep8D4NQasRzeau2vyROI48GQv6Kj3VrUdIGZLDIPg==";
-        influxDBClient = InfluxDBFactory.connect(influxDBConfig.getUrl(), influxDBConfig.getUsername(), influxDBConfig.getPassword());
+        String influxDbUrl = influxDBV1Config.getUrl();
+        String influxDbUsername = influxDBV1Config.getUsername();
+        String influxDbPassword = influxDBV1Config.getPassword();
+        influxDBClient = InfluxDBFactory.connect(influxDbUrl, influxDbUsername, influxDbPassword);
 
 
-
-        if (!influxDBClient.databaseExists(influxDBConfig.getDatabase())) {
-            if(influxDBConfig.isCreateDatabase()) {
-                influxDBClient.createDatabase(influxDBConfig.getDatabase());
-            }
-            else {
-                throw new RuntimeException("This " + influxDBConfig.getDatabase() + " database does not exist!");
-            }
+        String influxDbDatabase = influxDBV1Config.getDatabase();
+        if (!influxDBClient.databaseExists(influxDbDatabase)) {
+            throw new RuntimeException("This " + influxDbDatabase + " database does not exist!");
         }
 
-        influxDBClient.setDatabase(influxDBConfig.getDatabase());
+        influxDBClient.setDatabase(influxDbDatabase);
 
-        if (influxDBConfig.getBatchActions() > 0) {
-            influxDBClient.enableBatch(influxDBConfig.getBatchActions(), influxDBConfig.getFlushDuration(), influxDBConfig.getFlushDurationTimeUnit());
+        if (influxDBV1Config.getBatchActions() > 0) {
+            influxDBClient.enableBatch(influxDBV1Config.getBatchActions(), influxDBV1Config.getFlushDuration(), influxDBV1Config.getFlushDurationTimeUnit());
         }
 
-        if (influxDBConfig.isEnableGzip()) {
-
+        if (influxDBV1Config.isEnableGzip()) {
             influxDBClient.enableGzip();
         }
     }
@@ -67,27 +53,12 @@ public class InfluxDBSink extends RichSinkFunction<InfluxDBPoint> {
     /**
      * Called when new data arrives to the sink, and forwards it to InfluxDB.
      *
-     * @param dataPoint {@link InfluxDBPoint}
+     * @param dataPoint {@link Point}
      */
     @Override
-    public void invoke(InfluxDBPoint dataPoint, Context context) throws Exception {
-        if (StringUtils.isNullOrWhitespaceOnly(dataPoint.getMeasurement())) {
-            throw new RuntimeException("No measurement defined");
-        }
+    public void invoke(Point dataPoint, Context context) throws Exception {
 
-        Point.Builder builder = Point.measurement(dataPoint.getMeasurement())
-                .time(dataPoint.getTimestamp(), TimeUnit.MILLISECONDS);
-
-        if (!CollectionUtil.isNullOrEmpty(dataPoint.getFields())) {
-            builder.fields(dataPoint.getFields());
-        }
-
-        if (!CollectionUtil.isNullOrEmpty(dataPoint.getTags())) {
-            builder.tag(dataPoint.getTags());
-        }
-
-        Point point = builder.build();
-        influxDBClient.write(point);
+        influxDBClient.write(dataPoint);
     }
 
     @Override

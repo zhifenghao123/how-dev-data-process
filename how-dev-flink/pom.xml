@@ -14,6 +14,8 @@
     <properties>
         <flink.version>1.17.2</flink.version>
         <flink.scala.version>2.12</flink.scala.version>
+        <influxdb-client.version>2.20</influxdb-client.version>
+
     </properties>
 
 
@@ -45,6 +47,32 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.influxdb</groupId>
+            <artifactId>influxdb-java</artifactId>
+            <version>2.20</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.influxdb/influxdb-client-java -->
+        <dependency>
+            <groupId>com.influxdb</groupId>
+            <artifactId>influxdb-client-java</artifactId>
+            <version>6.8.0</version>
+        </dependency>
+
+
+        <!-- mysql连接-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.12.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>

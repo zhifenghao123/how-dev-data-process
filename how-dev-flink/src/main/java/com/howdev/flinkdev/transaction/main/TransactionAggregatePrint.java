@@ -1,4 +1,4 @@
-package com.howdev.flinkdev.transaction;
+package com.howdev.flinkdev.transaction.main;
 
 import com.howdev.flinkdev.transaction.operator.MyAggregateFunction;
 import com.howdev.flinkdev.transaction.operator.MyProcessWindowFunction;

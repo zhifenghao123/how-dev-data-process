@@ -1,4 +1,4 @@
-package com.howdev.flinkdev.transaction;
+package com.howdev.flinkdev.transaction.main;
 
 import com.howdev.flinkdev.transaction.sink.mysql.WeekdaySinkFunction2;
 import com.howdev.mock.stream.MockStreamSource;

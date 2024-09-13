@@ -1,4 +1,4 @@
-package com.howdev.flinkdev.transaction;
+package com.howdev.flinkdev.transaction.main;
 
 import com.howdev.flinkdev.transaction.sink.Influxdb.v1.InfluxDbV1Config;
 import com.howdev.flinkdev.transaction.sink.Influxdb.v1.InfluxDbV1Sink;

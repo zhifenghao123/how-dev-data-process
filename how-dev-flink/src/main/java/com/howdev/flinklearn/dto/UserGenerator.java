@@ -2,7 +2,7 @@ package com.howdev.flinklearn.dto;
 
 public class UserGenerator {
 
-    private static String[] genders = {"Male", "Female"};
+    private static String[] genders = {"M", "F"};
 
     public static User generate(Long userId) {
 

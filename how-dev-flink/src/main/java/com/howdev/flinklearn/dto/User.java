@@ -6,6 +6,15 @@ public class User {
     private Integer age;
     private Double salary;
 
+    public User() {
+    }
+
+    public User(Long userId, String gender, Integer age, Double salary) {
+        this.userId = userId;
+        this.gender = gender;
+        this.age = age;
+        this.salary = salary;
+    }
 
     public Long getUserId() {
         return userId;

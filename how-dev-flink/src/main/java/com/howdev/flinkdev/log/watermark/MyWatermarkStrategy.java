@@ -1,6 +1,6 @@
 package com.howdev.flinkdev.log.watermark;
 
-import com.howdev.mock.dto.LogRecord;
+import com.howdev.flinkdev.log.biz.domain.LogRecord;
 import org.apache.flink.api.common.eventtime.*;
 
 public class MyWatermarkStrategy implements WatermarkStrategy<LogRecord> {

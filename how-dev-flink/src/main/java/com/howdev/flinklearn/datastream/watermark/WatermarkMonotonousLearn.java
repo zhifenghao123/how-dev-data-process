@@ -1,7 +1,7 @@
 package com.howdev.flinklearn.datastream.watermark;
 
 import com.howdev.common.util.JacksonUtil;
-import com.howdev.mock.dto.LogRecord;
+import com.howdev.flinklearn.biz.domain.LogRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;

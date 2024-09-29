@@ -1,10 +1,9 @@
 package com.howdev.flinklearn.datastream.watermark;
 
 import com.howdev.common.util.JacksonUtil;
-import com.howdev.mock.dto.LogRecord;
+import com.howdev.flinklearn.biz.domain.LogRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.eventtime.*;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple3;
@@ -17,8 +16,6 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindo
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
-
-import java.time.Duration;
 
 @Slf4j
 public class WatermarkCustomizeLearn {

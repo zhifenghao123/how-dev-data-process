@@ -2,8 +2,8 @@ package com.howdev.flinkdev.transaction.main;
 
 import com.howdev.flinkdev.transaction.sink.Influxdb.v1.InfluxDbV1Config;
 import com.howdev.flinkdev.transaction.sink.Influxdb.v1.InfluxDbV1Sink;
-import com.howdev.mock.dto.Transaction;
-import com.howdev.mock.stream.MockStreamSource;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
+import com.howdev.flinkdev.transaction.biz.mock.MockStreamSource;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;

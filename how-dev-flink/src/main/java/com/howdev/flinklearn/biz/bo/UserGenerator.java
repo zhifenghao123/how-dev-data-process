@@ -1,4 +1,6 @@
-package com.howdev.flinklearn.datastream.dto;
+package com.howdev.flinklearn.biz.bo;
+
+import com.howdev.flinklearn.biz.domain.User;
 
 public class UserGenerator {
 

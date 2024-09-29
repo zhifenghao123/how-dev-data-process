@@ -1,7 +1,7 @@
 package com.howdev.flinklearn.datastream.window;
 
 import com.howdev.common.util.JacksonUtil;
-import com.howdev.mock.dto.LogRecord;
+import com.howdev.flinklearn.biz.domain.LogRecord;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple3;

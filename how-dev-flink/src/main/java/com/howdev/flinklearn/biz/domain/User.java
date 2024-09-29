@@ -1,4 +1,4 @@
-package com.howdev.flinklearn.datastream.dto;
+package com.howdev.flinklearn.biz.domain;
 
 public class User {
     private Long userId;

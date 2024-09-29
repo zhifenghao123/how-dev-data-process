@@ -1,7 +1,7 @@
 package com.howdev.flinkdev.log.operator;
 
-import com.howdev.mock.dto.LogRecord;
-import com.howdev.mock.dto.LogRecordAggregateResult;
+import com.howdev.flinkdev.log.biz.domain.LogRecord;
+import com.howdev.flinkdev.log.biz.dto.LogRecordAggregateResult;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.functions.AggregateFunction;

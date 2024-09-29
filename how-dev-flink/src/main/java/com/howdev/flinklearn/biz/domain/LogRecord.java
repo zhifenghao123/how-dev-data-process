@@ -1,4 +1,4 @@
-package com.howdev.mock.dto;
+package com.howdev.flinklearn.biz.domain;
 
 import com.howdev.flinkdev.log.watermark.Timeable;
 import lombok.Data;

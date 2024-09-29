@@ -2,7 +2,7 @@ package com.howdev.flinkdev.log.main;
 
 import com.howdev.common.util.JacksonUtil;
 import com.howdev.flinkdev.log.watermark.MyWatermarkStrategy;
-import com.howdev.mock.dto.LogRecord;
+import com.howdev.flinkdev.log.biz.domain.LogRecord;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;

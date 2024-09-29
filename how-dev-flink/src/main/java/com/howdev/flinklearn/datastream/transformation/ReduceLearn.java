@@ -1,7 +1,7 @@
 package com.howdev.flinklearn.datastream.transformation;
 
-import com.howdev.flinklearn.datastream.dto.User;
-import com.howdev.flinklearn.datastream.dto.UserGenerator;
+import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.bo.UserGenerator;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;

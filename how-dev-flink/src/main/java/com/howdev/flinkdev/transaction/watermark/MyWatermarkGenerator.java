@@ -1,6 +1,6 @@
 package com.howdev.flinkdev.transaction.watermark;
 
-import com.howdev.mock.dto.Transaction;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
 import org.apache.flink.api.common.eventtime.Watermark;
 import org.apache.flink.api.common.eventtime.WatermarkGenerator;
 import org.apache.flink.api.common.eventtime.WatermarkOutput;

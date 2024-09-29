@@ -1,4 +1,4 @@
-package com.howdev.mock.dto;
+package com.howdev.flinkdev.transaction.biz.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

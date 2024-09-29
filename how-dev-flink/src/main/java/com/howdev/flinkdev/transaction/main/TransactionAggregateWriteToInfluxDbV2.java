@@ -2,8 +2,8 @@ package com.howdev.flinkdev.transaction.main;
 
 import com.howdev.flinkdev.transaction.sink.Influxdb.v2.InfluxDbV2Config;
 import com.howdev.flinkdev.transaction.sink.Influxdb.v2.InfluxDbV2Sink;
-import com.howdev.mock.dto.Transaction;
-import com.howdev.mock.stream.MockStreamSource;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
+import com.howdev.flinkdev.transaction.biz.mock.MockStreamSource;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import org.apache.flink.api.common.functions.MapFunction;

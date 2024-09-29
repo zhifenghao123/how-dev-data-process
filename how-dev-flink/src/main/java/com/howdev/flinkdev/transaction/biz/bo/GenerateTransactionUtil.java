@@ -1,6 +1,6 @@
-package com.howdev.mock.util;
+package com.howdev.flinkdev.transaction.biz.bo;
 
-import com.howdev.mock.dto.Transaction;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
 
 import java.math.BigDecimal;
 import java.util.Date;

@@ -1,6 +1,6 @@
 package com.howdev.flinklearn.datastream.split;
 
-import com.howdev.flinklearn.datastream.dto.User;
+import com.howdev.flinklearn.biz.domain.User;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;

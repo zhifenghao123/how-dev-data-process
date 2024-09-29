@@ -1,6 +1,6 @@
-package com.howdev.mock.dto;
+package com.howdev.flinkdev.transaction.biz.domain;
 
-import com.howdev.mock.util.SerialUtil;
+import com.howdev.flinkdev.transaction.biz.mock.util.SerialUtil;
 import lombok.Data;
 
 import java.io.Serializable;

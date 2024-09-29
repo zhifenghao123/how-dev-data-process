@@ -1,10 +1,9 @@
 package com.howdev.flinkdev.log.operator;
 
-import com.howdev.mock.dto.LogRecordAggregateResult;
-import com.howdev.mock.dto.TransactionAggregateResult;
-import com.howdev.mock.util.TimeUtil;
+import com.howdev.flinkdev.log.biz.dto.LogRecordAggregateResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -20,9 +19,9 @@ public class MyProcessWindowFunction extends ProcessWindowFunction<LogRecordAggr
 
         long windowStartTime = context.window().getStart();
 
-        String formatWindowStartMinuteTimeText = TimeUtil.formatTimeStamp(windowStartTime, "yyyy-MM-dd HH:mm:00");
+        String formatWindowStartMinuteTimeText = DateFormatUtils.format(windowStartTime, "yyyy-MM-dd HH:mm:00");
 
-        Date formatWindowStartMinuteTime = TimeUtil.parseDateTime(formatWindowStartMinuteTimeText, "yyyy-MM-dd HH:mm:ss");
+        Date formatWindowStartMinuteTime = DateUtils.parseDate(formatWindowStartMinuteTimeText, "yyyy-MM-dd HH:mm:ss");
 
 
         log.info("windowStartTime: {}", formatWindowStartMinuteTimeText);

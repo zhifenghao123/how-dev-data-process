@@ -1,7 +1,7 @@
-package com.howdev.mock.stream;
+package com.howdev.flinkdev.transaction.biz.mock;
 
-import com.howdev.mock.dto.Transaction;
-import com.howdev.mock.util.GenerateTransactionUtil;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
+import com.howdev.flinkdev.transaction.biz.bo.GenerateTransactionUtil;
 import org.apache.flink.streaming.api.functions.source.ParallelSourceFunction;
 import org.apache.flink.types.Row;
 

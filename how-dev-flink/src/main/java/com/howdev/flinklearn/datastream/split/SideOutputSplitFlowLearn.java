@@ -22,7 +22,7 @@ public class SideOutputSplitFlowLearn {
             @Override
             public User map(String value) throws Exception {
                 String[] split = value.split(",");
-                return new User(Long.valueOf(split[0]), split[1], Integer.valueOf(split[2]), Double.valueOf(split[3]), Long.parseLong(split[4]));
+                return new User(split[1], Integer.valueOf(split[2]), Long.parseLong(split[4]));
             }
         });
 

@@ -13,11 +13,11 @@ public class SimpleTransformationLearn {
         env.setParallelism(1);
 
         DataStreamSource<User> userDataStreamSource = env.fromElements(
-                UserGenerator.generate(1L, "male", 20, 1000.0, 1L),
-                UserGenerator.generate(2L, "female", 25, 2100.0, 2L),
-                UserGenerator.generate(3L, "male", 22, 1200.0, 3L),
-                UserGenerator.generate(4L, "female", 35, 2500.0, 4L),
-                UserGenerator.generate(5L, "male", 30, 3000.0, 5L)
+                UserGenerator.generate("male", 20, 1L),
+                UserGenerator.generate("female", 25, 2L),
+                UserGenerator.generate("male", 22, 3L),
+                UserGenerator.generate("female", 35, 4L),
+                UserGenerator.generate("male", 30, 5L)
         );
 
         /**

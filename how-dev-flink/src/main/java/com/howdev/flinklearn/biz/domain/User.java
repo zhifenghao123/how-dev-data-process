@@ -20,7 +20,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                ", gender='" + gender + '\'' +
+                "gender='" + gender + '\'' +
                 ", age=" + age +
                 ", registerTimeStamp=" + registerTimeStamp +                '}';
     }

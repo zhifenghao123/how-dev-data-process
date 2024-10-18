@@ -1,19 +1,14 @@
 package com.howdev.flinklearn.datastream.watermark;
 
-import com.howdev.common.util.JacksonUtil;
-import com.howdev.flinklearn.biz.bo.UserGenerator;
-import com.howdev.flinklearn.biz.domain.LogRecord;
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.functions.Partitioner;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple1;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -41,43 +36,41 @@ public class WatermarkAllowLatenessLearn {
 
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据
-        SingleOutputStreamOperator<User> dataSource = env
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
                 .socketTextStream("127.0.0.1", 9999)
-                .map((MapFunction<String, User>) value -> {
+                .map((MapFunction<String, OrderRecord>) value -> {
                     String[] splits = value.split(",");
-                    return UserGenerator.generate(splits[0],
-                            Integer.valueOf(splits[1]),
-                            Long.parseLong(splits[2]));
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
                 });
 
         // 定义WatermarkStrategy
-        WatermarkStrategy<User> watermarkStrategy = WatermarkStrategy
+        WatermarkStrategy<OrderRecord> watermarkStrategy = WatermarkStrategy
                 // 指定watermark生成策略，乱序的等待3秒
-                .<User>forBoundedOutOfOrderness(Duration.ofSeconds(3))
+                .<OrderRecord>forBoundedOutOfOrderness(Duration.ofSeconds(3))
                 // 指定时间戳分配器，从数据中提取
-                .withTimestampAssigner(new SerializableTimestampAssigner<User>() {
+                .withTimestampAssigner(new SerializableTimestampAssigner<OrderRecord>() {
                     // 返回时间戳，要毫秒
                     @Override
-                    public long extractTimestamp(User element, long recordTimestamp) {
+                    public long extractTimestamp(OrderRecord element, long recordTimestamp) {
                         //log.info("数据={}, requestTimeStamp={}", element, recordTimestamp);
-                        return element.getRegisterTimeStamp() * 1000;
+                        return element.getOrderTimestamp() * 1000;
                     }
                 })
                 .withIdleness(Duration.ofSeconds(2)); //空闲等待2秒
 
-        SingleOutputStreamOperator<User> watermarkedDataStream = dataSource
+        SingleOutputStreamOperator<OrderRecord> watermarkedDataStream = dataSource
                 .assignTimestampsAndWatermarks(watermarkStrategy);
 
-        KeyedStream<User, Tuple1<String>> keyedStream = watermarkedDataStream.keyBy(new KeySelector<User, Tuple1<String>>() {
+        KeyedStream<OrderRecord, Tuple1<String>> keyedStream = watermarkedDataStream.keyBy(new KeySelector<OrderRecord, Tuple1<String>>() {
             @Override
-            public  Tuple1<String> getKey(User value) throws Exception {
-                return Tuple1.of(value.getGender());
+            public  Tuple1<String> getKey(OrderRecord value) throws Exception {
+                return Tuple1.of(value.getUserId());
             }
         });
 
-        OutputTag<User> latenessDataTag = new OutputTag<>("LATENESS_DATA", Types.POJO(User.class));
+        OutputTag<OrderRecord> latenessDataTag = new OutputTag<>("LATENESS_DATA", Types.POJO(OrderRecord.class));
         // 基于时间的
-        WindowedStream<User, Tuple1<String>, TimeWindow> windowStream = keyedStream
+        WindowedStream<OrderRecord, Tuple1<String>, TimeWindow> windowStream = keyedStream
                 // 使用事件时间语义的窗口
                 .window(TumblingEventTimeWindows.of(Time.seconds(10)))
                 // 推迟2秒关窗，允许晚到2秒的数据
@@ -108,9 +101,9 @@ public class WatermarkAllowLatenessLearn {
          * 3、极端小部分迟到很久的数据，放到侧输出流。获取到之后可以做各种处理
          */
 
-        SingleOutputStreamOperator<String> processedDataStream = windowStream.process(new ProcessWindowFunction<User, String, Tuple1<String>, TimeWindow>() {
+        SingleOutputStreamOperator<String> processedDataStream = windowStream.process(new ProcessWindowFunction<OrderRecord, String, Tuple1<String>, TimeWindow>() {
             @Override
-            public void process(Tuple1<String> key, Context context, Iterable<User> elements, Collector<String> out) throws Exception {
+            public void process(Tuple1<String> key, Context context, Iterable<OrderRecord> elements, Collector<String> out) throws Exception {
                 // 上下文中可以拿到很多信息
                 long start = context.window().getStart();
                 long end = context.window().getEnd();

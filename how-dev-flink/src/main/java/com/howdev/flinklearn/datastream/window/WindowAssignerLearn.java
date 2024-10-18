@@ -1,7 +1,7 @@
 package com.howdev.flinklearn.datastream.window;
 
-import com.howdev.common.util.JacksonUtil;
-import com.howdev.flinklearn.biz.domain.LogRecord;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -17,13 +17,17 @@ public class WindowAssignerLearn {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据
-        SingleOutputStreamOperator<LogRecord> dataSource = env.socketTextStream("127.0.0.1", 9999)
-                .map(line -> JacksonUtil.fromJson(line, LogRecord.class));
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
+                .socketTextStream("127.0.0.1", 9999)
+                .map((MapFunction<String, OrderRecord>) value -> {
+                    String[] splits = value.split(",");
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
+                });
 
-        KeyedStream<LogRecord, Tuple2<String, String>> keyedStream = dataSource.keyBy(new KeySelector<LogRecord, Tuple2<String, String>>() {
+        KeyedStream<OrderRecord, Tuple2<String, String>> keyedStream = dataSource.keyBy(new KeySelector<OrderRecord, Tuple2<String, String>>() {
             @Override
-            public Tuple2<String, String> getKey(LogRecord value) throws Exception {
-                return Tuple2.of(value.getService(), value.getMethod());
+            public Tuple2<String, String> getKey(OrderRecord value) throws Exception {
+                return Tuple2.of(value.getUserId(), value.getProductName());
             }
         });
 
@@ -50,14 +54,14 @@ public class WindowAssignerLearn {
         //dataSource.windowAll();
 
         // 基于时间的
-        WindowedStream<LogRecord, Tuple2<String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));//滚动窗口，窗口长度10s
-        //WindowedStream<LogRecord, Tuple2<String, String>, TimeWindow> windowedStream = keyedStream.window(SlidingProcessingTimeWindows.of(Time.seconds(1), Time.seconds(10)));//滑动窗口，窗口长度1分钟，滑动步长10s
-        //WindowedStream<LogRecord, Tuple2<String, String>, TimeWindow> windowedStream = keyedStream.window(ProcessingTimeSessionWindows.withGap(Time.seconds(10)));//会话窗口，超时间隔10s
+        WindowedStream<OrderRecord, Tuple2<String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));//滚动窗口，窗口长度10s
+        //WindowedStream<OrderRecord, Tuple2<String, String>, TimeWindow> windowedStream = keyedStream.window(SlidingProcessingTimeWindows.of(Time.seconds(1), Time.seconds(10)));//滑动窗口，窗口长度1分钟，滑动步长10s
+        //WindowedStream<OrderRecord, Tuple2<String, String>, TimeWindow> windowedStream = keyedStream.window(ProcessingTimeSessionWindows.withGap(Time.seconds(10)));//会话窗口，超时间隔10s
 
         // 基于计数的
-        //WindowedStream<LogRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.countWindow(5);//滚动窗口，窗口长度为5个
-        //WindowedStream<LogRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.countWindow(5, 2);//滑动窗口，窗口长度为5个，滑动步长为2个
-        //WindowedStream<LogRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.window(GlobalWindows.create());//全局窗口，技术窗口的底层用的就是这个，需要自定义的时候才使用
+        //WindowedStream<OrderRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.countWindow(5);//滚动窗口，窗口长度为5个
+        //WindowedStream<OrderRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.countWindow(5, 2);//滑动窗口，窗口长度为5个，滑动步长为2个
+        //WindowedStream<OrderRecord, Tuple2<String, String>, GlobalWindow> windowedStream = keyedStream.window(GlobalWindows.create());//全局窗口，技术窗口的底层用的就是这个，需要自定义的时候才使用
         /**
          * 2.指定窗口函数：窗口内数据的计算逻辑
          */
@@ -66,7 +70,7 @@ public class WindowAssignerLearn {
          * 全窗口函数：数据来了不计算，存储起来；窗口触发的时候，计算存储的数据，并输出结果。主要有process()
          */
 
-        SingleOutputStreamOperator<LogRecord> outputStreamOperator = windowStream.sum("cost");
+        SingleOutputStreamOperator<OrderRecord> outputStreamOperator = windowStream.sum("cost");
         outputStreamOperator.print("window-sum:");
 
         env.execute();

@@ -1,7 +1,6 @@
 package com.howdev.flinklearn.datastream.transformation;
 
-import com.howdev.flinklearn.biz.domain.User;
-import com.howdev.flinklearn.biz.bo.UserGenerator;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -14,12 +13,15 @@ public class ReduceLearn {
 
         env.setParallelism(1);
 
-        DataStreamSource<User> userDataStreamSource = env.fromElements(
-                UserGenerator.generate("male", 20, 1L),
-                UserGenerator.generate("female", 25, 2L),
-                UserGenerator.generate("male", 22, 3L),
-                UserGenerator.generate("female", 35, 4L),
-                UserGenerator.generate("male", 30, 5L)
+        DataStreamSource<OrderRecord> userDataStreamSource = env.fromElements(
+                new OrderRecord("u1", "iPhone", 5000.0, 1L),
+                new OrderRecord("u2", "huawei", 3000.0,  3L),
+                new OrderRecord("u2", "iPhone", 5000.0, 3L),
+                new OrderRecord("u1", "iPhone", 5000.0, 4L),
+                new OrderRecord("u3", "huawei", 2000.0, 5L),
+                new OrderRecord("u2", "iPhone", 5000.0, 6L),
+                new OrderRecord("u1", "iPhone", 5000.0, 5L),
+                new OrderRecord("u1", "iPhone", 5000.0, 7L)
         );
 
         /**
@@ -31,18 +33,19 @@ public class ReduceLearn {
          *      value1:之前的计算结果，存储的状态
          *      value2:当前来的数据
          */
-        KeyedStream<User, String> keyedStream = userDataStreamSource.keyBy(User::getGender);
+        KeyedStream<OrderRecord, String> keyedStream = userDataStreamSource.keyBy(OrderRecord::getUserId);
 
-        SingleOutputStreamOperator<User> reducedStream = keyedStream.reduce(new ReduceFunction<User>() {
+        SingleOutputStreamOperator<OrderRecord> reducedStream = keyedStream.reduce(new ReduceFunction<OrderRecord>() {
             @Override
-            public User reduce(User value1, User value2) throws Exception {
+            public OrderRecord reduce(OrderRecord value1, OrderRecord value2) throws Exception {
                 System.out.println("value1=" + value1.toString());
                 System.out.println("value2=" + value2.toString());
 
-                User user = new User();
-                user.setGender(value1.getGender());
-                user.setAge(value1.getAge());
-                return user;
+                OrderRecord orderRecord = new OrderRecord();
+                orderRecord.setUserId(value1.getUserId());
+                orderRecord.setProductName(value1.getProductName());
+                orderRecord.setOrderAmount(value1.getOrderAmount() + value2.getOrderAmount());
+                return orderRecord;
             }
         });
 

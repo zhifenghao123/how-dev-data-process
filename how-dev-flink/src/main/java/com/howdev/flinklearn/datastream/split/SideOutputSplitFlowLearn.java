@@ -1,6 +1,6 @@
 package com.howdev.flinklearn.datastream.split;
 
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.UserBrowsingRecord;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -18,11 +18,11 @@ public class SideOutputSplitFlowLearn {
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据
         DataStreamSource<String> dataStreamSource = env.socketTextStream("127.0.0.1", 9999);
 
-        SingleOutputStreamOperator<User> userDataStream = dataStreamSource.map(new MapFunction<String, User>() {
+        SingleOutputStreamOperator<UserBrowsingRecord> userDataStream = dataStreamSource.map(new MapFunction<String, UserBrowsingRecord>() {
             @Override
-            public User map(String value) throws Exception {
+            public UserBrowsingRecord map(String value) throws Exception {
                 String[] split = value.split(",");
-                return new User(split[1], Integer.valueOf(split[2]), Long.parseLong(split[4]));
+                return new UserBrowsingRecord(split[0], split[1], Double.valueOf(split[2]), Long.valueOf(split[3]));
             }
         });
 
@@ -33,16 +33,16 @@ public class SideOutputSplitFlowLearn {
          *  3. 调用ctx.output方法，将数据输出到侧输出流
          *  4. 通过主流获取侧输出流
          */
-        OutputTag<User> invalidGenderTag = new OutputTag<>("INVALID_GENDER", Types.POJO(User.class));
-        SingleOutputStreamOperator<User> processedDataStream = userDataStream.process(new ProcessFunction<User, User>() {
+        OutputTag<UserBrowsingRecord> invalidGenderTag = new OutputTag<>("INVALID_GENDER", Types.POJO(UserBrowsingRecord.class));
+        SingleOutputStreamOperator<UserBrowsingRecord> processedDataStream = userDataStream.process(new ProcessFunction<UserBrowsingRecord, UserBrowsingRecord>() {
             @Override
-            public void processElement(User value, Context ctx, Collector<User> out) throws Exception {
-                String gender = value.getGender();
+            public void processElement(UserBrowsingRecord value, Context ctx, Collector<UserBrowsingRecord> out) throws Exception {
+                String productName = value.getProductName();
 
-                if (gender.equals("M") || gender.equals("F")) {
-                    out.collect(value);
-                } else {
+                if (productName == null || productName.isEmpty()) {
                     ctx.output(invalidGenderTag, value);
+                } else {
+                    out.collect(value);
                 }
 
             }
@@ -51,7 +51,7 @@ public class SideOutputSplitFlowLearn {
         // 打印主输出流
         processedDataStream.print("主流：");
         // 打印侧输出流
-        processedDataStream.getSideOutput(invalidGenderTag).print("无效性别-侧输出流：");
+        processedDataStream.getSideOutput(invalidGenderTag).print("无效产品-侧输出流：");
 
         env.execute();
     }

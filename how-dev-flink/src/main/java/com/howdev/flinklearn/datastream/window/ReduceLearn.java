@@ -1,11 +1,11 @@
 package com.howdev.flinklearn.datastream.window;
 
-import com.howdev.common.util.JacksonUtil;
-import com.howdev.flinklearn.biz.domain.LogRecord;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.datastream.WindowedStream;
@@ -20,20 +20,24 @@ public class ReduceLearn {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据
-        SingleOutputStreamOperator<LogRecord> dataSource = env.socketTextStream("127.0.0.1", 9999)
-                .map(line -> JacksonUtil.fromJson(line, LogRecord.class));
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
+                .socketTextStream("127.0.0.1", 9999)
+                .map((MapFunction<String, OrderRecord>) value -> {
+                    String[] splits = value.split(",");
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
+                });
 
-        KeyedStream<LogRecord, Tuple3<String, String, String>> keyedStream = dataSource.keyBy(new KeySelector<LogRecord, Tuple3<String, String, String>>() {
+        KeyedStream<OrderRecord, Tuple2<String, String>> keyedStream = dataSource.keyBy(new KeySelector<OrderRecord, Tuple2<String, String>>() {
             @Override
-            public Tuple3<String, String, String> getKey(LogRecord value) throws Exception {
-                return Tuple3.of(value.getService(), value.getMethod(), value.getReturnCode());
+            public Tuple2<String, String> getKey(OrderRecord value) throws Exception {
+                return Tuple2.of(value.getUserId(), value.getProductName());
             }
         });
 
 
 
         // 基于时间的
-        WindowedStream<LogRecord, Tuple3<String, String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));//滚动窗口，窗口长度10s
+        WindowedStream<OrderRecord, Tuple2<String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));//滚动窗口，窗口长度10s
 
         /**
          *
@@ -42,15 +46,14 @@ public class ReduceLearn {
          *  2.增量聚合：来一条数据，就会计算一次，但是不会输出
          *  3.在窗口触发的时候，才会输出窗口内最终计算结果
          */
-        SingleOutputStreamOperator<LogRecord> reducedStream = windowStream.reduce(new ReduceFunction<LogRecord>() {
+        SingleOutputStreamOperator<OrderRecord> reducedStream = windowStream.reduce(new ReduceFunction<OrderRecord>() {
             @Override
-            public LogRecord reduce(LogRecord value1, LogRecord value2) throws Exception {
+            public OrderRecord reduce(OrderRecord value1, OrderRecord value2) throws Exception {
                 log.info("调用reduce方法, value1:{},value2:{}", value1, value2);
-                LogRecord logRecord = new LogRecord();
-                logRecord.setService(value1.getService());
-                logRecord.setMethod(value1.getMethod());
-                logRecord.setReturnCode(value1.getReturnCode());
-                logRecord.setCost(value1.getCost() + value2.getCost());
+                OrderRecord logRecord = new OrderRecord();
+                logRecord.setUserId(value1.getUserId());
+                logRecord.setProductName(value1.getProductName());
+                logRecord.setOrderAmount(value1.getOrderAmount() + value2.getOrderAmount());
                 return logRecord;
             }
         });

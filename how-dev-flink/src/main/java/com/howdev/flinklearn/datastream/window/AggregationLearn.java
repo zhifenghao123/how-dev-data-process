@@ -1,11 +1,11 @@
 package com.howdev.flinklearn.datastream.window;
 
-import com.howdev.common.util.JacksonUtil;
-import com.howdev.flinklearn.biz.domain.LogRecord;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.functions.AggregateFunction;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.datastream.WindowedStream;
@@ -20,30 +20,34 @@ public class AggregationLearn {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据
-        SingleOutputStreamOperator<LogRecord> dataSource = env.socketTextStream("127.0.0.1", 9999)
-                .map(line -> JacksonUtil.fromJson(line, LogRecord.class));
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
+                .socketTextStream("127.0.0.1", 9999)
+                .map((MapFunction<String, OrderRecord>) value -> {
+                    String[] splits = value.split(",");
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
+                });
 
-        KeyedStream<LogRecord, Tuple3<String, String, String>> keyedStream = dataSource.keyBy(new KeySelector<LogRecord, Tuple3<String, String, String>>() {
+        KeyedStream<OrderRecord, Tuple2<String, String>> keyedStream = dataSource.keyBy(new KeySelector<OrderRecord, Tuple2<String, String>>() {
             @Override
-            public Tuple3<String, String, String> getKey(LogRecord value) throws Exception {
-                return Tuple3.of(value.getService(), value.getMethod(), value.getReturnCode());
+            public Tuple2<String, String> getKey(OrderRecord value) throws Exception {
+                return Tuple2.of(value.getUserId(), value.getProductName());
             }
         });
 
 
 
         // 基于时间的
-        WindowedStream<LogRecord, Tuple3<String, String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(20)));//滚动窗口，窗口长度10s
+        WindowedStream<OrderRecord, Tuple2<String, String>, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(20)));//滚动窗口，窗口长度10s
 
-        SingleOutputStreamOperator<String> aggregatedStream = windowStream.aggregate(new AggregateFunction<LogRecord, Long, String>() {
+        SingleOutputStreamOperator<String> aggregatedStream = windowStream.aggregate(new AggregateFunction<OrderRecord, Double, String>() {
             /**
              * 创建一个累加器，这就是为聚合创建了一个初始状态，每个聚合任务只会调用一次。
              * @return
              */
             @Override
-            public Long createAccumulator() {
+            public Double createAccumulator() {
                 System.out.println("调用createAccumulator方法");
-                return 0L;
+                return 0D;
             }
 
             /**
@@ -53,9 +57,9 @@ public class AggregationLearn {
              * @return
              */
             @Override
-            public Long add(LogRecord value, Long accumulator) {
+            public Double add(OrderRecord value, Double accumulator) {
                 System.out.println("调用add方法");
-                return accumulator + value.getCost();
+                return accumulator + value.getOrderAmount();
             }
 
             /**
@@ -64,7 +68,7 @@ public class AggregationLearn {
              * @return
              */
             @Override
-            public String getResult(Long accumulator) {
+            public String getResult(Double accumulator) {
                 System.out.println("调用getResult方法");
                 return accumulator.toString();
             }
@@ -77,7 +81,7 @@ public class AggregationLearn {
              * @return
              */
             @Override
-            public Long merge(Long a, Long b) {
+            public Double merge(Double a, Double b) {
                 System.out.println("调用merge方法");
                 return null;
             }

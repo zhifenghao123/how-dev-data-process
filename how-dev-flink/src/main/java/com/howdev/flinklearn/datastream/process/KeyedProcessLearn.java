@@ -1,7 +1,6 @@
 package com.howdev.flinklearn.datastream.process;
 
-import com.howdev.flinklearn.biz.bo.UserGenerator;
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.UserBrowsingRecord;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.configuration.Configuration;
@@ -22,21 +21,21 @@ public class KeyedProcessLearn {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
         env.setParallelism(1);
 
-        SingleOutputStreamOperator<User> userDataStream = env
+        SingleOutputStreamOperator<UserBrowsingRecord> userDataStream = env
                 .socketTextStream("127.0.0.1", 9999)
-                .map(new MapFunction<String, User>() {
+                .map(new MapFunction<String, UserBrowsingRecord>() {
                     @Override
-                    public User map(String value) throws Exception {
+                    public UserBrowsingRecord map(String value) throws Exception {
                         String[] split = value.split(",");
-                        return UserGenerator.generate(split[0], Integer.valueOf(split[1]), Long.valueOf(split[2]));
+                        return new UserBrowsingRecord(split[0], split[1], Double.valueOf(split[2]), Long.valueOf(split[3]));
                     }
                 })
                 .assignTimestampsAndWatermarks(
-                        WatermarkStrategy.<User>forBoundedOutOfOrderness(Duration.ofSeconds(3))
-                                .withTimestampAssigner((element, recordTimestamp) -> element.getRegisterTimeStamp() * 1000L));
+                        WatermarkStrategy.<UserBrowsingRecord>forBoundedOutOfOrderness(Duration.ofSeconds(3))
+                                .withTimestampAssigner((element, recordTimestamp) -> element.getBrowsingTimestamp() * 1000L));
 
 
-        KeyedStream<User, String> userKeyedDataStream = userDataStream.keyBy(user -> user.getGender());
+        KeyedStream<UserBrowsingRecord, String> userKeyedDataStream = userDataStream.keyBy(user -> user.getUserId());
 
         /**
          * 定时器：
@@ -47,9 +46,9 @@ public class KeyedProcessLearn {
          * 3、在process中获取当前watermark，显示的是上一次的watermark
              * =》因为process还没接收到这条数据矿应生成的新watermark）
          */
-        SingleOutputStreamOperator<String> processed = userKeyedDataStream.process(new KeyedProcessFunction<String, User, String>() {
+        SingleOutputStreamOperator<String> processed = userKeyedDataStream.process(new KeyedProcessFunction<String, UserBrowsingRecord, String>() {
             @Override
-            public void processElement(User value, KeyedProcessFunction<String, User, String>.Context ctx, Collector<String> out) throws Exception {
+            public void processElement(UserBrowsingRecord value, KeyedProcessFunction<String, UserBrowsingRecord, String>.Context ctx, Collector<String> out) throws Exception {
                 String currentKey = ctx.getCurrentKey();
                 // 数据中提取出来的事件时间
                 Long timestamp = ctx.timestamp();
@@ -74,7 +73,7 @@ public class KeyedProcessLearn {
 
             // 时间进展到定时器注册的时间，触发定时器执行该方法
             @Override
-            public void onTimer(long timestamp, KeyedProcessFunction<String, User, String>.OnTimerContext ctx, Collector<String> out) throws Exception {
+            public void onTimer(long timestamp, KeyedProcessFunction<String, UserBrowsingRecord, String>.OnTimerContext ctx, Collector<String> out) throws Exception {
                 super.onTimer(timestamp, ctx, out);
                 String currentKey = ctx.getCurrentKey();
                 System.out.println("currentKey" + currentKey + "现在时间是：" + timestamp + "，定时器触发了");

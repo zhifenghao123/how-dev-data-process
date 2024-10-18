@@ -1,25 +1,15 @@
 package com.howdev.flinklearn.datastream.window;
 
-import com.howdev.common.util.JacksonUtil;
-import com.howdev.flinklearn.biz.bo.UserGenerator;
-import com.howdev.flinklearn.biz.domain.LogRecord;
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
-import org.apache.flink.streaming.api.windowing.assigners.ProcessingTimeSessionWindows;
-import org.apache.flink.streaming.api.windowing.assigners.SessionWindowTimeGapExtractor;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.streaming.api.windowing.windows.GlobalWindow;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
@@ -80,37 +70,35 @@ public class TimeWindowLearn {
         env.setParallelism(1);
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据:1,M,20,180,1
-        SingleOutputStreamOperator<User> dataSource = env
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
                 .socketTextStream("127.0.0.1", 9999)
-                .map((MapFunction<String, User>) value -> {
+                .map((MapFunction<String, OrderRecord>) value -> {
                     String[] splits = value.split(",");
-                    return UserGenerator.generate(splits[0],
-                            Integer.valueOf(splits[1]),
-                            Long.parseLong(splits[2]));
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
                 });
 
-        KeyedStream<User, String> keyedStream = dataSource.keyBy(User::getGender);
+        KeyedStream<OrderRecord, String> keyedStream = dataSource.keyBy(OrderRecord::getUserId);
 
         // 基于时间的
         //滚动窗口，窗口长度10s
-        WindowedStream<User, String, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));
+        WindowedStream<OrderRecord, String, TimeWindow> windowStream = keyedStream.window(TumblingProcessingTimeWindows.of(Time.seconds(10)));
         //滑动窗口，窗口长度10s，滑动步长5s
-        //WindowedStream<User, String, TimeWindow> windowStream = keyedStream.window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)));
+        //WindowedStream<OrderRecord, String, TimeWindow> windowStream = keyedStream.window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)));
         //会话窗口，超时间隔5s
-        //WindowedStream<User, String, TimeWindow> windowStream = keyedStream.window(ProcessingTimeSessionWindows.withGap(Time.seconds(5)));
+        //WindowedStream<OrderRecord, String, TimeWindow> windowStream = keyedStream.window(ProcessingTimeSessionWindows.withGap(Time.seconds(5)));
         //会话窗口，动态超时间隔，每条数据到来，都会更新超时时间
-//        WindowedStream<User, String, TimeWindow> windowStream = keyedStream.window(ProcessingTimeSessionWindows.withDynamicGap(new SessionWindowTimeGapExtractor<User>() {
+//        WindowedStream<OrderRecord, String, TimeWindow> windowStream = keyedStream.window(ProcessingTimeSessionWindows.withDynamicGap(new SessionWindowTimeGapExtractor<OrderRecord>() {
 //            @Override
-//            public long extract(User element) {
+//            public long extract(OrderRecord element) {
 //                // 提取数据的age值作为会话超时时间
-//                return element.getAge() * 1000;
+//                return element.getOrderAmount() * 1000;
 //            }
 //        }));
 
 
 
 
-        SingleOutputStreamOperator<String> processedStream = windowStream.process(new ProcessWindowFunction<User, String, String, TimeWindow>() {
+        SingleOutputStreamOperator<String> processedStream = windowStream.process(new ProcessWindowFunction<OrderRecord, String, String, TimeWindow>() {
             /**
              *
              * @param key The key for which this window is evaluated.
@@ -120,7 +108,7 @@ public class TimeWindowLearn {
              * @throws Exception
              */
             @Override
-            public void process(String key, ProcessWindowFunction<User, String, String, TimeWindow>.Context context, Iterable<User> elements, Collector<String> out) throws Exception {
+            public void process(String key, ProcessWindowFunction<OrderRecord, String, String, TimeWindow>.Context context, Iterable<OrderRecord> elements, Collector<String> out) throws Exception {
                 // 上下文中可以拿到很多信息
                 long start = context.window().getStart();
                 long end = context.window().getEnd();

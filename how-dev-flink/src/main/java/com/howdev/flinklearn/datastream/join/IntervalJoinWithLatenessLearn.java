@@ -1,11 +1,9 @@
 package com.howdev.flinklearn.datastream.join;
 
-import com.howdev.flinklearn.biz.bo.UserGenerator;
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.UserBrowsingRecord;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
-import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -26,21 +24,21 @@ public class IntervalJoinWithLatenessLearn {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
         env.setParallelism(1);
 
-        SingleOutputStreamOperator<User> userDataStream = env
+        SingleOutputStreamOperator<UserBrowsingRecord> userBrowsingRecordDataStream = env
                 .socketTextStream("127.0.0.1", 9999)
-                .map(new MapFunction<String, User>() {
+                .map(new MapFunction<String, UserBrowsingRecord>() {
                     @Override
-                    public User map(String value) throws Exception {
+                    public UserBrowsingRecord map(String value) throws Exception {
                         String[] split = value.split(",");
-                        return UserGenerator.generate(split[0], Integer.valueOf(split[1]), Long.valueOf(split[2]));
+                        return new UserBrowsingRecord(split[0], split[1], Double.valueOf(split[2]), Long.valueOf(split[3]));
                     }
                 })
                 .assignTimestampsAndWatermarks(
-                        WatermarkStrategy.<User>forBoundedOutOfOrderness(Duration.ofSeconds(3))
-                                .withTimestampAssigner((element, recordTimestamp) -> element.getRegisterTimeStamp() * 1000L));
+                        WatermarkStrategy.<UserBrowsingRecord>forBoundedOutOfOrderness(Duration.ofSeconds(3))
+                                .withTimestampAssigner((element, recordTimestamp) -> element.getBrowsingTimestamp() * 1000L));
 
 
-        SingleOutputStreamOperator<Tuple3<String, Integer, Long>> tuple2DataStream = env
+        SingleOutputStreamOperator<Tuple3<String, Integer, Long>> tuple3DataStream = env
                 .socketTextStream("127.0.0.1", 8888)
                 .map(new MapFunction<String, Tuple3<String, Integer, Long>>() {
                     @Override
@@ -55,10 +53,10 @@ public class IntervalJoinWithLatenessLearn {
                 );
 
         // (1)分别做keyby
-        KeyedStream<User, Integer> userKeyedStream = userDataStream.keyBy(User::getAge);
-        KeyedStream<Tuple3<String, Integer, Long>, Integer> tuple2KeyedStream = tuple2DataStream.keyBy(tuple3 -> tuple3.f1);
+        KeyedStream<UserBrowsingRecord, String> userKeyedStream = userBrowsingRecordDataStream.keyBy(UserBrowsingRecord::getUserId);
+        KeyedStream<Tuple3<String, Integer, Long>, String> tuple2KeyedStream = tuple3DataStream.keyBy(tuple3 -> tuple3.f0);
 
-        OutputTag<User> userLateDataOutputTag = new OutputTag<>("9999-late", Types.POJO(User.class));
+        OutputTag<UserBrowsingRecord> userLateDataOutputTag = new OutputTag<>("9999-late", Types.POJO(UserBrowsingRecord.class));
         OutputTag<Tuple3<String, Integer, Long>> tupleLateDataOutputTag = new OutputTag<>("8888-late", Types.TUPLE(Types.STRING, Types.INT, Types.LONG));
 
         // (2)调用intervalJoin
@@ -75,10 +73,10 @@ public class IntervalJoinWithLatenessLearn {
                 .between(Time.seconds(-2), Time.seconds(2))
                 .sideOutputLeftLateData(userLateDataOutputTag)
                 .sideOutputRightLateData(tupleLateDataOutputTag)
-                .process(new ProcessJoinFunction<User, Tuple3<String, Integer, Long>, String>() {
+                .process(new ProcessJoinFunction<UserBrowsingRecord, Tuple3<String, Integer, Long>, String>() {
                     // 两条流的数据匹配上，才会调用这个方法
                     @Override
-                    public void processElement(User left, Tuple3<String, Integer, Long> right, ProcessJoinFunction<User, Tuple3<String, Integer, Long>, String>.Context ctx, Collector<String> out) throws Exception {
+                    public void processElement(UserBrowsingRecord left, Tuple3<String, Integer, Long> right, ProcessJoinFunction<UserBrowsingRecord, Tuple3<String, Integer, Long>, String>.Context ctx, Collector<String> out) throws Exception {
                         // 进入这个方法，是关联上的数据
                         out.collect(left.toString() + "<----------->" + right.toString());
                     }

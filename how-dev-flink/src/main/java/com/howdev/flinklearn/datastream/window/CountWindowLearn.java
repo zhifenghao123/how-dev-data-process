@@ -1,7 +1,6 @@
 package com.howdev.flinklearn.datastream.window;
 
-import com.howdev.flinklearn.biz.bo.UserGenerator;
-import com.howdev.flinklearn.biz.domain.User;
+import com.howdev.flinklearn.biz.domain.OrderRecord;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -10,7 +9,6 @@ import org.apache.flink.streaming.api.datastream.WindowedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.GlobalWindow;
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
 import java.util.ArrayList;
@@ -22,30 +20,28 @@ public class CountWindowLearn {
         env.setParallelism(1);
 
         // 可以使用 'nc -lk 9999' 监听9999端口，并发送数据:1,M,20,180,1
-        SingleOutputStreamOperator<User> dataSource = env
+        SingleOutputStreamOperator<OrderRecord> dataSource = env
                 .socketTextStream("127.0.0.1", 9999)
-                .map((MapFunction<String, User>) value -> {
+                .map((MapFunction<String, OrderRecord>) value -> {
                     String[] splits = value.split(",");
-                    return UserGenerator.generate(splits[0],
-                            Integer.valueOf(splits[1]),
-                            Long.parseLong(splits[2]));
+                    return new OrderRecord(splits[0], splits[1], Double.valueOf(splits[2]), Long.valueOf(splits[3]));
                 });
 
-        KeyedStream<User, String> keyedStream = dataSource.keyBy(User::getGender);
+        KeyedStream<OrderRecord, String> keyedStream = dataSource.keyBy(OrderRecord::getUserId);
 
         // 基于计数的
         //滚动窗口，窗口长度为5个
         //WindowedStream<User, String, GlobalWindow> windowStream = keyedStream.countWindow(5);
         //滑动窗口，窗口长度为5个，滑动步长为2个。没经过一个步长，都有一个窗口触发输出，第一次输出在第二条数据来的时候
-        WindowedStream<User, String, GlobalWindow> windowStream = keyedStream.countWindow(5, 2);
+        WindowedStream<OrderRecord, String, GlobalWindow> windowStream = keyedStream.countWindow(5, 2);
         //全局窗口，计数窗口的底层用的就是这个，需要自定义的时候才使用
         //WindowedStream<User, String, GlobalWindow> windowStream = keyedStream.window(GlobalWindows.create());
 
 
 
-        SingleOutputStreamOperator<String> processedStream = windowStream.process(new ProcessWindowFunction<User, String, String, GlobalWindow>() {
+        SingleOutputStreamOperator<String> processedStream = windowStream.process(new ProcessWindowFunction<OrderRecord, String, String, GlobalWindow>() {
             @Override
-            public void process(String key, ProcessWindowFunction<User, String, String, GlobalWindow>.Context context, Iterable<User> elements, Collector<String> out) throws Exception {
+            public void process(String key, ProcessWindowFunction<OrderRecord, String, String, GlobalWindow>.Context context, Iterable<OrderRecord> elements, Collector<String> out) throws Exception {
                 // 上下文中可以拿到很多信息
                 long windowMaxTimestamp = context.window().maxTimestamp();
                 String formattedMaxTimestamp = DateFormatUtils.format(windowMaxTimestamp, "yyyy-MM-dd HH:mm:ss");

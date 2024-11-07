@@ -75,7 +75,7 @@ public class WatermarkOutOfOrdernessAndAllowWindowLatenessAndProcessWindowLearn 
                 // 推迟2秒关窗，允许晚到2秒的数据
                 // TODO: 尤其注意这里会对触发ProcessWindowFunction的执行有着影响，具体为：
                 // 当水位达到窗口结束时间是时会触发执行一次；然后只要有一条延迟数据在允许延迟的时间内，且数据的水位线位于窗口结束时间前，则会触发一次ProcessWindowFunction
-                .allowedLateness(Time.seconds(3));
+                .allowedLateness(Time.seconds(2));
 
         SingleOutputStreamOperator<String> aggregatedDataStream = windowWindowedStream.aggregate(new MyAggFunction(), new MyProcessWindowFunction());
         aggregatedDataStream.print("最终结果：");
@@ -159,10 +159,16 @@ public class WatermarkOutOfOrdernessAndAllowWindowLatenessAndProcessWindowLearn 
             String formattedWindowStart = DateFormatUtils.format(start, "yyyy-MM-dd HH:mm:ss");
             String formattedWindowEnd = DateFormatUtils.format(end, "yyyy-MM-dd HH:mm:ss");
 
+
+            long currentWatermark = context.currentWatermark();
+            String formattedCurrentWatermark = DateFormatUtils.format(currentWatermark, "yyyy-MM-dd HH:mm:ss");
+
             long count = elements.spliterator().estimateSize();
             OrderAmountStatistic processResult = elements.iterator().next();
 
-            String formattedOutput = String.format("key=%s,windowStart=%s,windowEnd=%s 的窗口包含%d个元素. \n窗口计算结果：%s", key, formattedWindowStart, formattedWindowEnd, count, processResult.toString());
+            String formattedOutput = String.format("key=%s,windowStart=%s,windowEnd=%s 的窗口包含%d个元素. \n" +
+                    "窗口计算结果：%s.\n" + "当前水位线=%d(%s)"
+                    , key, formattedWindowStart, formattedWindowEnd, count, processResult.toString(), currentWatermark, formattedCurrentWatermark);
 
             out.collect(formattedOutput);
 

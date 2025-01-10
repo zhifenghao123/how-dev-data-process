@@ -17,6 +17,7 @@
         <module>how-dev-sql</module>
         <module>how-dev-hadoop</module>
         <module>how-dev-flink</module>
+        <module>how-dev-data-common</module>
     </modules>
 
     <properties>

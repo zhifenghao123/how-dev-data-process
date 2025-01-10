@@ -1,6 +1,6 @@
 package com.howdev.flinkdev.wordcount;
 
-import com.howdev.mock.stream.MockStreamSource;
+import com.howdev.flinkdev.transaction.biz.mock.MockStreamSource;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.typeinfo.Types;

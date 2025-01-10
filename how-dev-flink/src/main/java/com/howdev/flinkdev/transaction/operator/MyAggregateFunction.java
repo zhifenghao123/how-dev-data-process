@@ -1,7 +1,7 @@
 package com.howdev.flinkdev.transaction.operator;
 
-import com.howdev.mock.dto.Transaction;
-import com.howdev.mock.dto.TransactionAggregateResult;
+import com.howdev.flinkdev.transaction.biz.domain.Transaction;
+import com.howdev.flinkdev.transaction.biz.dto.TransactionAggregateResult;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 

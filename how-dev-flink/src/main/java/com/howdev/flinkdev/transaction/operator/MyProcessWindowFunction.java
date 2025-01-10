@@ -1,7 +1,7 @@
 package com.howdev.flinkdev.transaction.operator;
 
-import com.howdev.mock.dto.TransactionAggregateResult;
-import com.howdev.mock.util.TimeUtil;
+import com.howdev.flinkdev.transaction.biz.dto.TransactionAggregateResult;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -13,7 +13,7 @@ public class MyProcessWindowFunction extends ProcessWindowFunction<TransactionAg
         long windowStartTime = context.window().getStart();
         long windowEndTime = context.window().getEnd();
 
-        String formatWindowStartMinuteTimeText = TimeUtil.formatTimeStamp(windowStartTime, "yyyy-MM-dd HH:mm:00");
+        String formatWindowStartMinuteTimeText = DateFormatUtils.format(windowStartTime, "yyyy-MM-dd HH:mm:00");
 
         Long userId = keyTuple.f0;
         String occurredLocation = keyTuple.f1;

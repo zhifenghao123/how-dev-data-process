@@ -15,7 +15,7 @@
     </properties>
 
     <dependencies>
-        <!-- 导入spark的依赖 -->
+        <!-- 导入spark-core的依赖 -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.version}</artifactId>

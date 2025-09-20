@@ -1,0 +1,21 @@
+POST http://localhost:8080/batchDeposit
+Content-Type: application/json
+
+{
+  "clientId": "test-client",
+  "requestTime": 1632134400000,
+  "ip": "127.0.0.1",
+  "data": {
+    "processBatchNo": "hao-1",
+    "depositRequests": [
+      {
+        "userId": "10001",
+        "amount": 10000
+      },
+      {
+        "userId": "10002",
+        "amount": 50000
+      }
+    ]
+  }
+}

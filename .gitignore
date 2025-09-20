@@ -6,3 +6,6 @@ target
 *.iml
 
 how-dev-flink/flink-lib/flink-dist-1.17.2.jar
+
+
+how-dev-test-web/log

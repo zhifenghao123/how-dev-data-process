@@ -18,6 +18,7 @@
         <module>how-dev-hadoop</module>
         <module>how-dev-flink</module>
         <module>how-dev-data-common</module>
+        <module>how-dev-test-web</module>
     </modules>
 
     <properties>

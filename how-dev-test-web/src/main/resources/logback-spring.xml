@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<!--    引入了Spring Boot默认的Logback配置，包括一些预定义的日志模式和变量（如CONSOLE_LOG_PATTERN和FILE_LOG_PATTERN）-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+<!--    定义了一个名为CONSOLE的日志输出器（Appender），用于将日志输出到控制台。-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+<!--        定义了日志的格式化方式。-->
+        <encoder>
+<!--            使用Spring Boot默认的控制台日志模式。-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+<!--            指定日志输出的字符编码为UTF-8。-->
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+<!--    定义了一个名为APP_LOG的日志输出器，用于将日志输出到文件，并支持日志文件的滚动（Rolling）。-->
+    <appender name="APP_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+<!--            定义了日志的格式化方式。-->
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+<!--            指定日志输出的字符编码为UTF-8。-->
+            <charset>utf8</charset>
+        </encoder>
+<!--        指定日志文件的路径和名称。-->
+        <file>how-dev-test-web/log/app.log</file>
+<!--        定义了日志文件的滚动策略。-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+<!--            最多保留1个备份文件。-->
+            <maxIndex>1</maxIndex>
+<!--            备份文件的命名模式，%i表示索引。-->
+            <fileNamePattern>app.log.%i</fileNamePattern>
+        </rollingPolicy>
+<!--        定义了触发日志文件滚动的条件。-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+<!--            当日志文件大小达到1MB时触发滚动。-->
+            <MaxFileSize>1MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+<!--    定义了根日志记录器的级别为INFO，表示只记录INFO级别及以上的日志。-->
+    <root level="INFO">
+<!--        引用CONSOLE输出器，将日志输出到控制台。-->
+        <appender-ref ref="CONSOLE" />
+<!--        引用APP_LOG输出器，将日志输出到文件。-->
+        <appender-ref ref="APP_LOG" />
+    </root>
+</configuration>

@@ -38,7 +38,9 @@ DESCRIBE: 通过执行脚本，指定参数，发送curl请求，并将响应结
   sh curlRequest.sh --processBatchNo "123" --userDepositAmount "10001:1000,10002:500"
   输出示例：
   [2025-09-20 10:00:00][PID:12345]@192.168.1.100 - processBatchNo: 123, userDepositAmount: 10001:1000,10002:500
+  ......
 
+  !!!注意，在测试脚本完整功能时，请启动how-dev-test-web项目服务，并确保服务端口号为8080。否则修改脚本中的SERVER_IP和SERVER_PORT的值为实际的服务IP和端口号。
 INFO
 
 SERVER_IP="127.0.0.1"
